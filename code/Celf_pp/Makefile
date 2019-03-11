@@ -37,7 +37,7 @@ InfluenceModels_debug.o: InfluenceModels.cc
 	$(CC) $(DEBFLAGS) InfluenceModels.cc
 
 clean:
-	rm -f core *.o *~ InfluenceModels InfluenceModels_debug output/*
+	rm -rf core *.o *~ InfluenceModels InfluenceModels_debug output temp
 
 test: InfluenceModels
 	./InfluenceModels -c config_test.txt
