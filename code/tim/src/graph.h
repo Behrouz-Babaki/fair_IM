@@ -24,7 +24,7 @@ class Graph
         string graph_file;
         void readNM(){
             ifstream cin((folder+"attribute.txt").c_str());
-            ASSERT(!cin == false);
+            ASSERT(!cin == NULL);
             string s;
             while(cin >> s){
                 if(s.substr(0,2)=="n="){
@@ -49,7 +49,7 @@ class Graph
         vector<bool> hasnode;
         void readGraph(){
             FILE * fin= fopen((graph_file).c_str(), "r");
-            ASSERT(fin != false);
+            ASSERT(fin != NULL);
             int readCnt=0;
             for(int i=0; i<m; i++){
                 readCnt ++;

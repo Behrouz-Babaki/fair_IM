@@ -73,7 +73,7 @@ public:
     void readGraph()
     {
         FILE *fin = fopen((graph_file).c_str(), "r");
-        ASSERT(fin != false);
+        ASSERT(fin != NULL);
         int readCnt = 0;
         for (int i = 0; i < m; i++)
         {
