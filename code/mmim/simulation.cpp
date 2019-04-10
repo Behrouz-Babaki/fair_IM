@@ -10,7 +10,7 @@ using std::uniform_int_distribution;
 using std::vector;
 using std::queue;
 
-simRes simulation(vector<int> &seeds, float alpha, int rep, Graph graph)
+simRes simulation(vector<int> &seeds, int rep, Graph graph)
 {
     random_device rand_dev;
     mt19937 generator(rand_dev());

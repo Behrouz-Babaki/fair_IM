@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 
 // Adds K random centers to the seeds
-vector<float> random(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> random(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n===Random===\n";
     int numV = graph.n;
     
@@ -26,9 +26,9 @@ vector<float> random(int init, float alpha, int rep, int k, int gap, Graph& grap
     mt19937 generator(rand_dev());
     uniform_int_distribution<int> distr(0, numV);*/
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "random", 1, alpha, rep);
+    printProbs(graph, "random", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -47,8 +47,8 @@ vector<float> random(int init, float alpha, int rep, int k, int gap, Graph& grap
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "random", i, alpha, rep);
-            result = simulation(seeds, alpha, rep, graph);
+            printProbs(graph, "random", i, rep);
+            result = simulation(seeds, rep, graph);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
         }
     }
@@ -60,7 +60,7 @@ vector<float> random(int init, float alpha, int rep, int k, int gap, Graph& grap
 }
 
 // Each round adds a seed: that is connected to the most number of nodes
-vector<float> max_deg(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> max_deg(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n===Max Degree===\n";
     int numV = graph.n;
     
@@ -71,9 +71,9 @@ vector<float> max_deg(int init, float alpha, int rep, int k, int gap, Graph& gra
     bool* isSeed = new bool [numV]{};
     isSeed[init] = true;
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "maxdeg", 1, alpha, rep);
+    printProbs(graph, "maxdeg", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -94,8 +94,8 @@ vector<float> max_deg(int init, float alpha, int rep, int k, int gap, Graph& gra
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "maxdeg", i, alpha, rep);
-            result = simulation(seeds, alpha, rep, graph);
+            printProbs(graph, "maxdeg", i, rep);
+            result = simulation(seeds, rep, graph);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
         }
     }
@@ -106,7 +106,7 @@ vector<float> max_deg(int init, float alpha, int rep, int k, int gap, Graph& gra
 }
 
 // Each round adds a seed: that is connected to the most number of non-seed nodes
-vector<float> max_deg_adv(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> max_deg_adv(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n===Max Degree Adv===\n";
     int numV = graph.n;
     
@@ -117,9 +117,9 @@ vector<float> max_deg_adv(int init, float alpha, int rep, int k, int gap, Graph&
     bool* isSeed = new bool [numV]{};
     isSeed[init] = true;
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "maxdegadv", 1, alpha, rep);
+    printProbs(graph, "maxdegadv", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -158,8 +158,8 @@ vector<float> max_deg_adv(int init, float alpha, int rep, int k, int gap, Graph&
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "maxdegadv", i, alpha, rep);
-            result = simulation(seeds, alpha, rep, graph);
+            printProbs(graph, "maxdegadv", i, rep);
+            result = simulation(seeds, rep, graph);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
         }
     }
@@ -170,7 +170,7 @@ vector<float> max_deg_adv(int init, float alpha, int rep, int k, int gap, Graph&
 }
 
 // Each round adds a seed: that is connected to the most number of nodes
-vector<float> min_deg(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> min_deg(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n===Min Degree===\n";
     int numV = graph.n;
     
@@ -181,9 +181,9 @@ vector<float> min_deg(int init, float alpha, int rep, int k, int gap, Graph& gra
     bool* isSeed = new bool [numV]{};
     isSeed[init] = true;
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "mindeg", 1, alpha, rep);
+    printProbs(graph, "mindeg", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -203,8 +203,8 @@ vector<float> min_deg(int init, float alpha, int rep, int k, int gap, Graph& gra
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "mindeg", i, alpha, rep);
-            result = simulation(seeds, alpha, rep, graph);
+            printProbs(graph, "mindeg", i, rep);
+            result = simulation(seeds, rep, graph);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
         }
     }
@@ -215,7 +215,7 @@ vector<float> min_deg(int init, float alpha, int rep, int k, int gap, Graph& gra
 }
 
 // Each round adds a seed: that is connected to the least number of seed nodes and then least number of non-seed nodes
-vector<float> min_deg_adv(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> min_deg_adv(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n===Min Degree Adv===\n";
     int numV = graph.n;
     
@@ -226,9 +226,9 @@ vector<float> min_deg_adv(int init, float alpha, int rep, int k, int gap, Graph&
     bool* isSeed = new bool [numV]{};
     isSeed[init] = true;
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "mindegadv", 1, alpha, rep);
+    printProbs(graph, "mindegadv", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -267,8 +267,8 @@ vector<float> min_deg_adv(int init, float alpha, int rep, int k, int gap, Graph&
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "mindegadv", i, alpha, rep);
-            result = simulation(seeds, alpha, rep, graph);
+            printProbs(graph, "mindegadv", i, rep);
+            result = simulation(seeds, rep, graph);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
         }
     }
@@ -281,7 +281,7 @@ vector<float> min_deg_adv(int init, float alpha, int rep, int k, int gap, Graph&
 // K-center: Minimize distance from seeds
 // Gonzalez Algorithm
 // Each round adds the furthest point to centers
-vector<float> k_gonz(int init, float alpha, int rep, int k, int gap, Graph graph) {
+vector<float> k_gonz(int init, int rep, int k, int gap, Graph graph) {
     cout << "\n===K Gonzalez===\n";
     int numV = graph.n;
     
@@ -292,9 +292,9 @@ vector<float> k_gonz(int init, float alpha, int rep, int k, int gap, Graph graph
     bool* isSeed = new bool [numV]{};
     isSeed[init] = true;
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "gonzalez", 1, alpha, rep);
+    printProbs(graph, "gonzalez", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -319,8 +319,8 @@ vector<float> k_gonz(int init, float alpha, int rep, int k, int gap, Graph graph
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "gonzalez", i, alpha, rep);
-            result = simulation(seeds, alpha, rep, graph);
+            printProbs(graph, "gonzalez", i, rep);
+            result = simulation(seeds, rep, graph);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
         }
     }

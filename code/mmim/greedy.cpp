@@ -8,7 +8,7 @@ using std::endl;
 using std::vector;
 
 // Each rounds adds a seed: Min probable
-vector<float> myopic(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> myopic(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n===Myopic===\n";
     clock_t t = clock();
     
@@ -16,20 +16,20 @@ vector<float> myopic(int init, float alpha, int rep, int k, int gap, Graph& grap
     vector<float> output;
     seeds.push_back(init);
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "myopic", 1, alpha, rep);
+    printProbs(graph, "myopic", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
     for(int i = 2; i <= k; i++) {
         seeds.push_back(result.node);
-        result = simulation(seeds, alpha, rep, graph);
+        result = simulation(seeds, rep, graph);
         cout << "Seed #" << i << ": " << result.node << " -- prob " << result.minPr << endl;
         
         if(i % gap == 0) {
             output.push_back(result.minPr);
-            printProbs(graph, "myopic", i, alpha, rep);
+            printProbs(graph, "myopic", i, rep);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
             cout << "... Time: " << (float)(clock() - t)/CLOCKS_PER_SEC << endl << endl;
             t = clock();
@@ -41,7 +41,7 @@ vector<float> myopic(int init, float alpha, int rep, int k, int gap, Graph& grap
 }
 
 // Add k Min Probables
-vector<float> naiveMyopic(int init, float alpha, int rep, int k, int gap, Graph& graph) {
+vector<float> naiveMyopic(int init, int rep, int k, int gap, Graph& graph) {
     cout << "\n ===Naive Myopic===\n";
     clock_t t = clock();
     
@@ -51,9 +51,9 @@ vector<float> naiveMyopic(int init, float alpha, int rep, int k, int gap, Graph&
     vector<float> output;
     seeds.push_back(init);
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    printProbs(graph, "naivemyopic", 1, alpha, rep);
+    printProbs(graph, "naivemyopic", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -73,9 +73,9 @@ vector<float> naiveMyopic(int init, float alpha, int rep, int k, int gap, Graph&
         cout << "Seed #" << i << ": " << nextSeed << " -- prob " << float(minPr)/numV <<endl;
         
         if(i % gap == 0) {
-            result = simulation(seeds, alpha, rep, graph);
+            result = simulation(seeds, rep, graph);
             output.push_back(result.minPr);
-            printProbs(graph, "naivemyopic", i, alpha, rep);
+            printProbs(graph, "naivemyopic", i, rep);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
             cout << "... Time: " << (float)(clock() - t)/CLOCKS_PER_SEC << endl << endl;
             t = clock();
@@ -89,7 +89,7 @@ vector<float> naiveMyopic(int init, float alpha, int rep, int k, int gap, Graph&
 
 // Each round adds a seed: That Increase the Min Probability the Most (true)
 // Each round adds a seed: That Increase the Average Probability the Most (false)
-vector<float> greedy_Reach(int init, float alpha, int rep, int k, int gap, Graph& graph, bool obj) {
+vector<float> greedy_Reach(int init, int rep, int k, int gap, Graph& graph, bool obj) {
     if(obj) cout << "\n ===Greedy===\n";
     else cout << "\n ===Reach===\n";
     clock_t t = clock();
@@ -100,10 +100,10 @@ vector<float> greedy_Reach(int init, float alpha, int rep, int k, int gap, Graph
     vector<float> output;
     seeds.push_back(init);
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    if(obj) printProbs(graph, "greedy", 1, alpha, rep);
-    else printProbs(graph, "reach", 1, alpha, rep);
+    if(obj) printProbs(graph, "greedy", 1, rep);
+    else printProbs(graph, "reach", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -118,7 +118,7 @@ vector<float> greedy_Reach(int init, float alpha, int rep, int k, int gap, Graph
         for(int r = 0; r < numV; r++) {
             if(isSeed[r]) continue;
             seeds.push_back(r);
-            result = simulation(seeds, alpha, rep, graph);
+            result = simulation(seeds, rep, graph);
             if(obj) temp = result.minPr;
             else temp = result.avePr;
             if(temp > maxProb) {
@@ -132,10 +132,10 @@ vector<float> greedy_Reach(int init, float alpha, int rep, int k, int gap, Graph
         cout << "Seed #" << i << ": " << candidate << " -- prob " << result.minPr << endl;
         
         if(i % gap == 0) {
-            result = simulation(seeds, alpha, rep, graph);
+            result = simulation(seeds, rep, graph);
             output.push_back(result.minPr);
-            if(obj) printProbs(graph, "greedy", i, alpha, rep);
-            else printProbs(graph, "reach", i, alpha, rep);
+            if(obj) printProbs(graph, "greedy", i, rep);
+            else printProbs(graph, "reach", i, rep);
             cout << "\nMin node: " << result.node << " -- next prob: " << result.minPr << endl;
             cout << "... Time: " << (float)(clock() - t)/CLOCKS_PER_SEC << endl << endl;
             t = clock();
@@ -149,7 +149,7 @@ vector<float> greedy_Reach(int init, float alpha, int rep, int k, int gap, Graph
 
 // Adds k Seeds That Increase the Min Probability the Most (true)
 // Adds k Seeds That Increase the Average Probability the Most (false)
-vector<float> naiveGreedy_Reach(int init, float alpha, int rep, int k, int gap, Graph& graph, bool obj) {
+vector<float> naiveGreedy_Reach(int init, int rep, int k, int gap, Graph& graph, bool obj) {
     if(obj) cout << "\n ===Naive Greedy===\n";
     else cout << "\n ===Naive Reach===\n";
     clock_t t = clock();
@@ -160,10 +160,10 @@ vector<float> naiveGreedy_Reach(int init, float alpha, int rep, int k, int gap, 
     vector<float> output;
     seeds.push_back(init);
     
-    simRes result = simulation(seeds, alpha, rep, graph);
+    simRes result = simulation(seeds, rep, graph);
     output.push_back(result.minPr);
-    if(obj) printProbs(graph, "naivegreedy", 1, alpha, rep);
-    else printProbs(graph, "naivereach", 1, alpha, rep);
+    if(obj) printProbs(graph, "naivegreedy", 1, rep);
+    else printProbs(graph, "naivereach", 1, rep);
     cout << "Seed #1: " << init << endl;
     cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
     
@@ -174,7 +174,7 @@ vector<float> naiveGreedy_Reach(int init, float alpha, int rep, int k, int gap, 
     for(int i = 0; i < numV; i++) {
         if(isSeed[i]) continue;
         seeds.push_back(i);
-        result = simulation(seeds, alpha, rep, graph);
+        result = simulation(seeds, rep, graph);
         if(obj) nextProbs[i] = result.minPr;
         else nextProbs[i] = result.avePr;
         seeds.pop_back();
@@ -196,10 +196,10 @@ vector<float> naiveGreedy_Reach(int init, float alpha, int rep, int k, int gap, 
         cout << "Seed #" << i << ": " << candidate << " -- next prob " << maxProb << endl;
         
         if(i % gap == 0) {
-            result = simulation(seeds, alpha, rep, graph);
+            result = simulation(seeds, rep, graph);
             output.push_back(result.minPr);
-            if(obj) printProbs(graph, "naivegreedy", i, alpha, rep);
-            else printProbs(graph, "naivereach", i, alpha, rep);
+            if(obj) printProbs(graph, "naivegreedy", i, rep);
+            else printProbs(graph, "naivereach", i, rep);
             cout << "\nMin node: " << result.node << " -- prob: " << result.minPr << endl;
             cout << "... Time: " << (float)(clock() - t)/CLOCKS_PER_SEC << endl << endl;
             t = clock();

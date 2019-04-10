@@ -22,6 +22,6 @@ struct simRes
 };
 
 void print_result(std::vector<int> &, int, int, Graph, int *);
-simRes simulation(std::vector<int> &seeds, float alpha, int rep, Graph graph);
+simRes simulation(std::vector<int> &seeds, int rep, Graph graph);
 
 #endif // SIMULATION_HPP
