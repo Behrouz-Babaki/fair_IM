@@ -42,7 +42,7 @@ void Graph::setRand()
     }
 }
 
-AdjListNode *Graph::newAdjListNode(int id)
+AdjListNode *Graph::newAdjListNode(int id, double p)
 {
     AdjListNode *newNode = new AdjListNode;
     newNode->id = id;
@@ -50,11 +50,11 @@ AdjListNode *Graph::newAdjListNode(int id)
     return newNode;
 }
 
-void Graph::addEdge(int src, int dest, bool dir)
+void Graph::addEdge(int src, int dest, double p, bool dir)
 {
     degree[src]++;
     in_degree[dest]++;
-    AdjListNode *newNode = newAdjListNode(dest);
+    AdjListNode *newNode = newAdjListNode(dest, p);
     newNode->next = neighbors[src].head;
     neighbors[src].head = newNode;
     if (dir)
@@ -62,7 +62,7 @@ void Graph::addEdge(int src, int dest, bool dir)
         return;
     }
     degree[dest]++;
-    newNode = newAdjListNode(src);
+    newNode = newAdjListNode(src, p);
     newNode->next = neighbors[dest].head;
     neighbors[dest].head = newNode;
 }

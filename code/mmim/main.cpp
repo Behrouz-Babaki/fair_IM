@@ -79,12 +79,14 @@ Graph readGraph(string file) {
     cout << "Number of Nodes: " << numV << endl;
     Graph netGraph(numV);
     
+    //TODO remove this flag
     bool dir;
     input >> dir; // 0: Undirecrted, 1: Directed
     
     int from, to;
-    while (input >> from >> to)
-        netGraph.addEdge(int(from), int(to), dir);
+    double p;
+    while (input >> from >> to >> p)
+        netGraph.addEdge(int(from), int(to), p, dir);
     input.close();
     
     return netGraph;

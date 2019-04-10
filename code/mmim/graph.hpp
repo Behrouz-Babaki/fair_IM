@@ -7,6 +7,7 @@
 struct AdjListNode
 {
     int id;
+    double p;
     struct AdjListNode *next;
 };
 
@@ -28,8 +29,8 @@ class Graph
 
     Graph(int);
     void setRand();
-    AdjListNode *newAdjListNode(int);
-    void addEdge(int src, int dest, bool dir);
+    AdjListNode *newAdjListNode(int, double);
+    void addEdge(int src, int dest, double p, bool dir);
     void printGraph();
 };
 

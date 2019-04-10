@@ -48,7 +48,7 @@ simRes simulation(vector<int> &seeds, float alpha, int rep, Graph graph)
                     iter = iter->next;
                     continue;
                 }
-                if ((float)distr(generator) / INT_MAX <= alpha)
+                if ((float)distr(generator) / INT_MAX <= iter->p)
                 {
                     isOn[iter->id] = true;
                     graph.prob[iter->id] += 1;
