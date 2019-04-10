@@ -79,9 +79,9 @@ def run(graphidx, budget, attribute, outdir):
         g.remove_nodes_from(to_remove)
 
     #propagation probability for the ICM
-    p = 0.1
-    for u,v in g.edges():
-        g[u][v]['p'] = p
+    # p = 0.1
+    # for u,v in g.edges():
+    #     g[u][v]['p'] = p
 
     g = nx.convert_node_labels_to_integers(g, label_attribute='pid')
 

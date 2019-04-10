@@ -33,3 +33,13 @@
 
 # VSCode files and directories
 .vscode
+
+# Other directories
+.bash_history
+.conda
+
+
+**/celfpp/InfluenceModels
+**/celfpp/temp
+**/celfpp/output
+
