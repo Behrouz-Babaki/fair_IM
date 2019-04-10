@@ -1,13 +1,13 @@
-// Heuristics: Random, Max-Degree, K-Center
+#include <iostream>
+#include <vector>
+#include "algorithms.hpp"
+#include "simulation.hpp"
+#include "print.hpp"
+#include "computation.hpp"
 
-#ifndef algorithms_h
-#define algorithms_h
-
-//#include <iostream> //#include <vector> //#include <stdlib.h> //#include <ctime> //#include <time.h>
-#include "simulation.h"
-#include "print.h"
-
-using namespace std;
+using std::vector;
+using std::cout;
+using std::endl;
 
 // Adds K random centers to the seeds
 vector<float> random(int init, float alpha, int rep, int k, int gap, Graph& graph) {
@@ -331,4 +331,3 @@ vector<float> k_gonz(int init, float alpha, int rep, int k, int gap, Graph graph
     return output;
 }
 
-#endif /* algorithms_h */

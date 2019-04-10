@@ -4,14 +4,22 @@
 //configuration - libraries it include
 //generate make file
 
-//#include <iostream> //#include <string> //#include <fstream> //#include <vector>
-#include "graph.cpp"
-#include "algorithms.h"
-#include "greedy.h"
-#include "computation.h"
-#include "print.h"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include "graph.hpp"
+#include "algorithms.hpp"
+#include "greedy.hpp"
+#include "computation.hpp"
+#include "print.hpp"
 
-using namespace std;
+using std::cin;
+using std::ifstream;
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
 
 Graph readGraph(string);
 void selectHeuristic(int, int, float, int, int, int, Graph);
@@ -21,12 +29,11 @@ int main() {
     clock_t tStart = clock();
     
     // Reads file's Name
-    string name;
+    string fileName;
     cout << "Enter file's name: ";
-    cin >> name;
+    cin >> fileName;
     
     // Loads data in the graph
-    string fileName = "../DataSets/" + name + ".txt";
     Graph netGraph = readGraph(fileName);
     
     string centerOption = "deg"; //Chooses the center

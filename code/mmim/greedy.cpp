@@ -1,13 +1,11 @@
-// Greedy Heuristics: ...
+#include <iostream>
+#include <vector>
+#include "simulation.hpp"
+#include "print.hpp"
 
-#ifndef min_hill_h
-#define min_hill_h
-
-//#include <time.h> //#include <iostream> //#include <vector> //#include <algorithm>
-#include "simulation.h"
-#include "print.h"
-
-using namespace std;
+using std::cout;
+using std::endl;
+using std::vector;
 
 // Each rounds adds a seed: Min probable
 vector<float> myopic(int init, float alpha, int rep, int k, int gap, Graph& graph) {
@@ -214,4 +212,4 @@ vector<float> naiveGreedy_Reach(int init, float alpha, int rep, int k, int gap, 
     return output;
 }
 
-#endif /* min_hill_h */
+

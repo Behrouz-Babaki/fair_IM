@@ -1,10 +1,12 @@
-// Distance of every node to its nearest source
-// Finds the first source using differenct approaches
-
-#ifndef computation_h
-#define computation_h
-
+#include <vector>
 #include <queue>
+#include <string>
+#include "computation.hpp"
+
+using std::vector;
+using std::swap;
+using std::queue;
+using std::string;
 
 // Returns distance of every nodes from nearest source
 int* calcDist(vector<int>& seeds, Graph& g) {
@@ -120,4 +122,3 @@ int pickCenter(Graph& g, string option) {
     return init;
 }
 
-#endif /* computation_h */

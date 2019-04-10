@@ -1,9 +1,13 @@
-//Print on file
+#include <string>
+#include <iostream>
+#include <fstream>
+#include "print.hpp"
 
-#ifndef print_h
-#define print_h
-
-#include <stdio.h>
+using std::string;
+using std::ofstream;
+using std::to_string;
+using std::endl;
+using std::vector;
 
 void printProbs(Graph& netGraph, string algName, int k, float alpha, int rep) {
     string fileName = "../Exp/Results/" + algName + "_" + to_string(k) + "_" + to_string(int(alpha*10)) + ".txt";
@@ -20,5 +24,3 @@ void writeOnFile(vector<float> results, string algName, float alpha, int k, int 
         outMin << i << ": " << results[i/gap] << endl;
     outMin.close();
 }
-
-#endif /* print_h */
