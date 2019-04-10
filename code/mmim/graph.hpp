@@ -30,7 +30,7 @@ class Graph
     Graph(int);
     void setRand();
     AdjListNode *newAdjListNode(int, double);
-    void addEdge(int src, int dest, double p, bool dir);
+    void addEdge(int src, int dest, double p);
     void printGraph();
 };
 

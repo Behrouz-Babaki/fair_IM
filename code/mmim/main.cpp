@@ -23,7 +23,7 @@ using std::string;
 using std::vector;
 
 Graph readGraph(string);
-void selectHeuristic(int, int, int, int, int, Graph);
+vector<float> run_heuristic(int, int, int, int, int, Graph);
 void algDescription();
 
 int main(int argc, char **argv)
@@ -66,68 +66,44 @@ int main(int argc, char **argv)
 
     // Loads data in the graph
     Graph netGraph = readGraph(graph_file);
-
-    // string centerOption = "deg"; //Chooses the center
-    // //cout << "Central close (cent), Max degree (deg), Min max dist (dist): ");
-    // //cin >> option;
     int initSeed = pickCenter(netGraph, centerOption);
     cout << "Center: " << initSeed << endl;
 
-    // //algDescription();
-    // int alg; // Reads alg's Name
-    // cout << "Enter alg's id: ";
-    // cin >> alg;
-
-    // //Set Simulation Variables
-    // cout << "Enter variables: \nrep (1000), maxK (100), gap (5), minAlpha (0.1), maxAlpha (0.5)\n";
-    // int rep, maxK, gap;
-    // float minAlpha, maxAlpha;
-    // cin >> rep >> maxK >> gap >> minAlpha >> maxAlpha;
     bool weightExp = false; //true;
 
-    selectHeuristic(algorithm_id, initSeed, rep, k, gap, netGraph);
-
-    // clock_t tAlph;
-    // for (float alpha = minAlpha; alpha <= maxAlpha; alpha += 0.1)
-    // {
-    //     cout << "\n-----alpha = " << alpha << "-----\n";
-    //     tAlph = clock();
-
-    //     selectHeuristic(alg, initSeed, alpha, rep, maxK, gap, netGraph);
-
-    //     cout << "Time: " << (float)(clock() - tAlph) / CLOCKS_PER_SEC << endl;
-    // }
-    // cout << "Time: " << (float)(clock() - tStart) / CLOCKS_PER_SEC << endl;
+    vector<float> results = run_heuristic(algorithm_id, initSeed, rep, k, gap, netGraph);
+    writeOnFile(results, solution_file, k, gap);
 
     return 0;
 }
 
 // Reads the network from file
-// Format: Number of nodes - Direction of Graph ... Source - Destination
+// Format:
+// number-of-nodes number-of-edges
+// source destination edge-probability
+// ...
+// source destination edge-probability
 Graph readGraph(string file)
 {
     ifstream input;
     input.open(file);
 
-    int numV;
-    input >> numV; // Number of Nodes
-    cout << "Number of Nodes: " << numV << endl;
+    int numV, numE;
+    input >> numV >> numE; // number of nodes and edges
+    cout << "number of nodes: " << numV << "\n"
+         << "number of edges: " << numE << endl;
     Graph netGraph(numV);
-
-    //TODO remove this flag
-    bool dir;
-    input >> dir; // 0: Undirecrted, 1: Directed
 
     int from, to;
     double p;
     while (input >> from >> to >> p)
-        netGraph.addEdge(int(from), int(to), p, dir);
+        netGraph.addEdge(int(from), int(to), p);
     input.close();
 
     return netGraph;
 }
 
-void selectHeuristic(int algID, int init, int rep, int k, int gap, Graph graph)
+vector<float> run_heuristic(int algID, int init, int rep, int k, int gap, Graph graph)
 {
     vector<float> results;
 
@@ -135,44 +111,36 @@ void selectHeuristic(int algID, int init, int rep, int k, int gap, Graph graph)
     {
     case 1:
         results = random(init, rep, k, gap, graph);
-        writeOnFile(results, "random", k, gap);
         break;
     case 2:
         results = max_deg(init, rep, k, gap, graph);
-        writeOnFile(results, "maxdeg", k, gap);
         break;
     case 3:
         results = min_deg(init, rep, k, gap, graph);
-        writeOnFile(results, "mindeg", k, gap);
         break;
     case 4:
         results = k_gonz(init, rep, k, gap, graph);
-        writeOnFile(results, "gonzalez", k, gap);
         break;
     case 5:
         results = naiveMyopic(init, rep, k, gap, graph);
-        writeOnFile(results, "naivemyopic", k, gap);
         break;
     case 6:
         results = myopic(init, rep, k, gap, graph);
-        writeOnFile(results, "myopic", k, gap);
         break;
     case 7:
         results = naiveGreedy_Reach(init, rep, k, gap, graph, true);
-        writeOnFile(results, "naivegreedy", k, gap);
         break;
     case 8:
         results = greedy_Reach(init, rep, k, gap, graph, true);
-        writeOnFile(results, "greedy", k, gap);
         break;
     case 9:
         results = naiveGreedy_Reach(init, rep, k, gap, graph, false);
-        writeOnFile(results, "naivereach", k, gap);
         break;
     case 10:
         results = greedy_Reach(init, rep, k, gap, graph, false);
-        writeOnFile(results, "reach", k, gap);
     }
+
+    return results;
 }
 
 void algDescription()
