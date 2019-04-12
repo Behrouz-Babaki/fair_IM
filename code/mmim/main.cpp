@@ -1,9 +1,6 @@
 // Information spreads from source nodes (seeds), over the network (IC model)
 // Different heuristic implemented for choosing seeds to "Maximize the Minimum Probablity"
 
-//configuration - libraries it include
-//generate make file
-
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -13,18 +10,19 @@
 #include "algorithms.hpp"
 #include "greedy.hpp"
 #include "computation.hpp"
-#include "print.hpp"
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::ifstream;
+using std::ofstream;
 using std::string;
 using std::vector;
 
 Graph readGraph(string);
-vector<float> run_heuristic(int, int, int, int, int, Graph);
-void algDescription();
+vector<float> run_heuristic(string, int, int, int, int, Graph);
+void writeOnFile(vector<float> results, string prob_filename, int k, int gap);
+void print_usage();
 
 int main(int argc, char **argv)
 {
@@ -36,24 +34,14 @@ int main(int argc, char **argv)
     string graph_file;
     string solution_file;
     int k;
-    int algorithm_id;
+    string algorithm;
 
     if (!(cmdl({"-g", "--graph-file"}) >> graph_file) ||
         !(cmdl({"-k", "--number-of-seeds"}) >> k) ||
-        !(cmdl({"-a", "--algorithm-id"}) >> algorithm_id) ||
+        !(cmdl({"-a", "--algorithm"}) >> algorithm) ||
         !(cmdl({"-o", "--solution-file"}) >> solution_file))
     {
-        cout << "Usage: " << argv[0]
-             << " --graph-file GRAPH-FILE"
-             << " --number-of-seeds K"
-             << " --solution-file SOLUTION-FILE"
-             << " --algorithm-id ID"
-             << " [--gap GAP (5)]"
-             << " [--number-of-simulations REP (1000)]"
-             << " [--center-option OPTION (deg)]"
-             << endl;
-        cout << "Description of algorithms:" << endl;
-        algDescription();
+        print_usage();
         exit(EXIT_FAILURE);
     }
 
@@ -67,22 +55,24 @@ int main(int argc, char **argv)
     // Loads data in the graph
     Graph netGraph = readGraph(graph_file);
     int initSeed = pickCenter(netGraph, centerOption);
-    cout << "Center: " << initSeed << endl;
 
-    bool weightExp = false; //true;
-
-    vector<float> results = run_heuristic(algorithm_id, initSeed, rep, k, gap, netGraph);
+    vector<float> results = run_heuristic(algorithm, initSeed, rep, k, gap, netGraph);
     writeOnFile(results, solution_file, k, gap);
 
     return 0;
 }
 
-// Reads the network from file
-// Format:
-// number-of-nodes number-of-edges
-// source destination edge-probability
-// ...
-// source destination edge-probability
+/*
+ Reads the network from file
+
+ Format:
+ ====================================
+ number-of-nodes number-of-edges
+ source destination edge-probability
+ ...
+ source destination edge-probability
+ =====================================
+*/
 Graph readGraph(string file)
 {
     ifstream input;
@@ -90,8 +80,6 @@ Graph readGraph(string file)
 
     int numV, numE;
     input >> numV >> numE; // number of nodes and edges
-    cout << "number of nodes: " << numV << "\n"
-         << "number of edges: " << numE << endl;
     Graph netGraph(numV);
 
     int from, to;
@@ -103,56 +91,67 @@ Graph readGraph(string file)
     return netGraph;
 }
 
-vector<float> run_heuristic(int algID, int init, int rep, int k, int gap, Graph graph)
+vector<float> run_heuristic(string algorithm, int init, int rep, int k, int gap, Graph graph)
 {
     vector<float> results;
 
-    switch (algID)
-    {
-    case 1:
+    if (algorithm == "random")
         results = random(init, rep, k, gap, graph);
-        break;
-    case 2:
+    else if (algorithm == "max-degree")
         results = max_deg(init, rep, k, gap, graph);
-        break;
-    case 3:
+    else if (algorithm == "min-degree")
         results = min_deg(init, rep, k, gap, graph);
-        break;
-    case 4:
+    else if (algorithm == "Gonzalez")
         results = k_gonz(init, rep, k, gap, graph);
-        break;
-    case 5:
+    else if (algorithm == "naive-myopic")
         results = naiveMyopic(init, rep, k, gap, graph);
-        break;
-    case 6:
+    else if (algorithm == "myopic")
         results = myopic(init, rep, k, gap, graph);
-        break;
-    case 7:
+    else if (algorithm == "naive-greedy")
         results = naiveGreedy_Reach(init, rep, k, gap, graph, true);
-        break;
-    case 8:
+    else if (algorithm == "greedy")
         results = greedy_Reach(init, rep, k, gap, graph, true);
-        break;
-    case 9:
+    else if (algorithm == "naive-reach")
         results = naiveGreedy_Reach(init, rep, k, gap, graph, false);
-        break;
-    case 10:
+    else if (algorithm == "reach")
         results = greedy_Reach(init, rep, k, gap, graph, false);
+    else
+    {
+        cout << algorithm << "is not a valid algorithm" << endl;
+        print_usage();
+        exit(EXIT_FAILURE);
     }
 
     return results;
 }
 
-void algDescription()
+void writeOnFile(vector<float> results, string prob_filename, int k, int gap) {
+    ofstream outMin (prob_filename);
+    for(int i = 0; i <= k; i += gap)
+        outMin << i << ": " << results[i/gap] << endl;
+    outMin.close();
+}
+
+void print_usage()
 {
-    cout << "--- \nEnter 1 for 'Random':\n Randomly chooses k nodes" << endl;
-    cout << "Enter 2 for 'Max Degree':\n Picks k nodes with maximum degrees" << endl;
-    cout << "Enter 3 for 'Min Degree':\n Picks k nodes with minimum degrees" << endl;
-    cout << "Enter 4 for 'Gonzalez':\n Each time pich the furthest node from sources -- repeat" << endl;
-    cout << "Enter 5 for 'Naive Myopic':\n Runs Simulation -- Picks k min probable nodes" << endl;
-    cout << "Enter 6 for 'Myopic':\n Runs Simulation -- Picks the min probable node -- repeat" << endl;
-    cout << "Enter 7 for 'Naive Greedy':\n Runs Simulation -- Picks the k nodes that increases min probability the most" << endl;
-    cout << "Enter 8 for 'Greedy':\n Runs Simulation -- Picks the node that increases min probability the most -- repeat" << endl;
-    cout << "Enter 9 for 'Naive Reach':\n Runs Simulation -- Picks the k nodes that increases average probability the most" << endl;
-    cout << "Enter 10 for 'Reach':\n Runs Simulation -- Picks the node that increases average probability the most -- repeat" << endl;
+    cout << "Usage: " << "mmim "
+         << " --graph-file GRAPH-FILE"
+         << " --number-of-seeds K"
+         << " --solution-file SOLUTION-FILE"
+         << " --algorithm ALG"
+         << " [--gap GAP (5)]"
+         << " [--number-of-simulations REP (1000)]"
+         << " [--center-option OPTION (deg)]"
+         << endl;
+    cout << "Description of algorithms:" << endl;
+    cout << "'random':\n Randomly chooses k nodes" << endl;
+    cout << "'max-degree':\n Picks k nodes with maximum degrees" << endl;
+    cout << "'min-degree':\n Picks k nodes with minimum degrees" << endl;
+    cout << "'Gonzalez':\n Each time pich the furthest node from sources -- repeat" << endl;
+    cout << "'naive-myopic':\n Runs Simulation -- Picks k min probable nodes" << endl;
+    cout << "'myopic':\n Runs Simulation -- Picks the min probable node -- repeat" << endl;
+    cout << "'naive-greedy':\n Runs Simulation -- Picks the k nodes that increases min probability the most" << endl;
+    cout << "'greedy':\n Runs Simulation -- Picks the node that increases min probability the most -- repeat" << endl;
+    cout << "'naive-reach':\n Runs Simulation -- Picks the k nodes that increases average probability the most" << endl;
+    cout << "'reach':\n Runs Simulation -- Picks the node that increases average probability the most -- repeat" << endl;
 }

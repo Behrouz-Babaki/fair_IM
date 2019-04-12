@@ -5,4 +5,4 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(mingap 
     algorithms.cpp  computation.cpp  graph.cpp  
-    greedy.cpp  main.cpp  print.cpp  simulation.cpp)
+    greedy.cpp      main.cpp         simulation.cpp)
