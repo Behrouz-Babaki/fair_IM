@@ -128,7 +128,7 @@ vector<int> run_heuristic(string algorithm, int init, int rep, int k, int gap, G
 void writeOnFile(vector<int> results, string prob_filename)
 {
     ofstream outMin(prob_filename);
-    for (int i = 1, k = results.size(); i <= k; i++)
+    for (int i = 0, k = results.size(); i < k; i++)
         outMin << results[i] << endl;
     outMin.close();
 }
