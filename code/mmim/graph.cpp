@@ -5,9 +5,6 @@
 
 using std::cout;
 using std::endl;
-using std::random_device;
-using std::mt19937;
-using std::uniform_int_distribution;
 
 Graph::Graph(int n)
 {
@@ -24,21 +21,6 @@ Graph::Graph(int n)
         degree[i] = in_degree[i] = prob[i] = 0;
         weight[i] = 1;
         group[i] = 1;
-    }
-}
-
-void Graph::setRand()
-{
-    random_device rand_dev;
-    mt19937 generator(rand_dev());
-    uniform_int_distribution<int> distrW(0, INT_MAX);
-    uniform_int_distribution<int> distrG(0, 1);
-
-    for (int i = 0; i < n; ++i)
-    {
-        weight[i] = (float)distrW(generator) / INT_MAX;
-        group[i] = distrG(generator);
-        uniform_int_distribution<int> distrT(0, in_degree[i]);
     }
 }
 

@@ -20,8 +20,8 @@ using std::string;
 using std::vector;
 
 Graph readGraph(string);
-vector<float> run_heuristic(string, int, int, int, int, Graph);
-void writeOnFile(vector<float> results, string prob_filename, int k, int gap);
+vector<int> run_heuristic(string, int, int, int, int, Graph);
+void writeOnFile(vector<int> results, string prob_filename);
 void print_usage();
 
 int main(int argc, char **argv)
@@ -56,8 +56,8 @@ int main(int argc, char **argv)
     Graph netGraph = readGraph(graph_file);
     int initSeed = pickCenter(netGraph, centerOption);
 
-    vector<float> results = run_heuristic(algorithm, initSeed, rep, k, gap, netGraph);
-    writeOnFile(results, solution_file, k, gap);
+    vector<int> results = run_heuristic(algorithm, initSeed, rep, k, gap, netGraph);
+    writeOnFile(results, solution_file);
 
     return 0;
 }
@@ -91,9 +91,9 @@ Graph readGraph(string file)
     return netGraph;
 }
 
-vector<float> run_heuristic(string algorithm, int init, int rep, int k, int gap, Graph graph)
+vector<int> run_heuristic(string algorithm, int init, int rep, int k, int gap, Graph graph)
 {
-    vector<float> results;
+    vector<int> results;
 
     if (algorithm == "random")
         results = random(init, rep, k, gap, graph);
@@ -125,16 +125,18 @@ vector<float> run_heuristic(string algorithm, int init, int rep, int k, int gap,
     return results;
 }
 
-void writeOnFile(vector<float> results, string prob_filename, int k, int gap) {
-    ofstream outMin (prob_filename);
-    for(int i = 0; i <= k; i += gap)
-        outMin << i << ": " << results[i/gap] << endl;
+void writeOnFile(vector<int> results, string prob_filename)
+{
+    ofstream outMin(prob_filename);
+    for (int i = 1, k = results.size(); i <= k; i++)
+        outMin << results[i] << endl;
     outMin.close();
 }
 
 void print_usage()
 {
-    cout << "Usage: " << "mmim "
+    cout << "Usage: "
+         << "mmim "
          << " --graph-file GRAPH-FILE"
          << " --number-of-seeds K"
          << " --solution-file SOLUTION-FILE"
