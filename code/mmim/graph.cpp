@@ -27,6 +27,7 @@ AdjListNode *Graph::newAdjListNode(int id, double p)
 {
     AdjListNode *newNode = new AdjListNode;
     newNode->id = id;
+    newNode->p = p;
     newNode->next = NULL;
     return newNode;
 }
