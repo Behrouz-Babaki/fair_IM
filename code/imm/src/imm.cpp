@@ -1,5 +1,6 @@
 #define HEAD_INFO
 
+#include <fstream>
 #include "sfmt/SFMT.h"
 #include "head.h"
 
@@ -7,6 +8,7 @@ class Argument{
 public:
     int k;
     string dataset;
+    string outfilename;
     double epsilon;
     string model;
     double T;
@@ -26,6 +28,16 @@ void run_with_parameter(InfGraph &g, const Argument & arg)
         Imm::InfluenceMaximize(g, arg);
 
         INFO(g.seedSet);
+        if (!arg.outfilename.empty()) {
+            std::ofstream outfile(arg.outfilename);
+            if (!outfile.is_open())
+                cout << "error opening file " << arg.outfilename << endl;
+            else {
+                for (auto i : g.seedSet)
+                    outfile << i << endl;
+                outfile.close();
+            }
+        }
        
     Timer::show();
 }
@@ -43,6 +55,8 @@ void Run(int argn, char **argv)
         }
         if (argv[i] == string("-dataset")) 
             arg.dataset = argv[i + 1];
+        if (argv[i] == string("-outfile"))
+            arg.outfilename = argv[i + 1];
         if (argv[i] == string("-epsilon")) 
             arg.epsilon = atof(argv[i + 1]);
         if (argv[i] == string("-T")) 
