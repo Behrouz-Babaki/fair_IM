@@ -36,7 +36,7 @@ vector<int> naiveMyopic(int init, int rep, int k, Graph &graph)
 
     bool *isSeed = new bool[numV]{};
     isSeed[init] = true;
-    int nextSeed = 0;
+    int nextSeed = -1;
     float minPr;
     for (int i = 2; i <= k; i++)
     {
@@ -50,7 +50,6 @@ vector<int> naiveMyopic(int init, int rep, int k, Graph &graph)
         seeds.push_back(nextSeed);
         isSeed[nextSeed] = true;
 
-        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
@@ -76,7 +75,7 @@ vector<int> greedy_Reach(int init, int rep, int k, Graph &graph, bool obj)
     float maxProb, temp;
     for (int i = 2; i <= k; i++)
     {
-        candidate = 0;
+        candidate = -1;
         maxProb = -1;
         for (int r = 0; r < numV; r++)
         {
@@ -97,8 +96,6 @@ vector<int> greedy_Reach(int init, int rep, int k, Graph &graph, bool obj)
         }
         seeds.push_back(candidate);
         isSeed[candidate] = true;
-
-        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;

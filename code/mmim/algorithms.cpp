@@ -21,9 +21,6 @@ vector<int> random(int init, int rep, int k, Graph &graph)
 
     srand(static_cast<unsigned int>(time(NULL)));
 
-    //TODO Is this needed?
-    simRes result = simulation(seeds, rep, graph);
-
     int nextRand;
     for (int i = 2; i <= k; i++)
     {
@@ -36,8 +33,6 @@ vector<int> random(int init, int rep, int k, Graph &graph)
         }
         seeds.push_back(nextRand);
         isSeed[nextRand] = true;
-        //TODO Is this needed?
-        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
@@ -232,8 +227,6 @@ vector<int> k_gonz(int init, int rep, int k, Graph graph)
 
     bool *isSeed = new bool[numV]{};
     isSeed[init] = true;
-    //TODO Is this needed?
-    simRes result = simulation(seeds, rep, graph);
 
     int *dist = new int[numV];
     int maxDist, furthest = 0;
@@ -256,8 +249,6 @@ vector<int> k_gonz(int init, int rep, int k, Graph graph)
 
         seeds.push_back(furthest);
         isSeed[furthest] = true;
-        //TODO Is this needed?
-        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
