@@ -20,7 +20,7 @@ using std::string;
 using std::vector;
 
 Graph readGraph(string);
-vector<int> run_heuristic(string, int, int, int, int, Graph);
+vector<int> run_heuristic(string, int, int, int, Graph);
 void writeOnFile(vector<int> results, string prob_filename);
 void print_usage();
 
@@ -47,8 +47,6 @@ int main(int argc, char **argv)
 
     string centerOption;
     cmdl({"-c", "--center-option"}, "deg") >> centerOption;
-    int gap;
-    cmdl({"-g", "--gap"}, 5) >> gap;
     int rep;
     cmdl({"-r", "--number-of-simulations"}, 1000) >> rep;
 
@@ -56,7 +54,7 @@ int main(int argc, char **argv)
     Graph netGraph = readGraph(graph_file);
     int initSeed = pickCenter(netGraph, centerOption);
 
-    vector<int> results = run_heuristic(algorithm, initSeed, rep, k, gap, netGraph);
+    vector<int> results = run_heuristic(algorithm, initSeed, rep, k, netGraph);
     writeOnFile(results, solution_file);
 
     return 0;
@@ -91,30 +89,30 @@ Graph readGraph(string file)
     return netGraph;
 }
 
-vector<int> run_heuristic(string algorithm, int init, int rep, int k, int gap, Graph graph)
+vector<int> run_heuristic(string algorithm, int init, int rep, int k, Graph graph)
 {
     vector<int> results;
 
     if (algorithm == "random")
-        results = random(init, rep, k, gap, graph);
+        results = random(init, rep, k, graph);
     else if (algorithm == "max-degree")
-        results = max_deg(init, rep, k, gap, graph);
+        results = max_deg(init, rep, k, graph);
     else if (algorithm == "min-degree")
-        results = min_deg(init, rep, k, gap, graph);
+        results = min_deg(init, rep, k, graph);
     else if (algorithm == "Gonzalez")
-        results = k_gonz(init, rep, k, gap, graph);
+        results = k_gonz(init, rep, k, graph);
     else if (algorithm == "naive-myopic")
-        results = naiveMyopic(init, rep, k, gap, graph);
+        results = naiveMyopic(init, rep, k, graph);
     else if (algorithm == "myopic")
-        results = myopic(init, rep, k, gap, graph);
+        results = myopic(init, rep, k, graph);
     else if (algorithm == "naive-greedy")
-        results = naiveGreedy_Reach(init, rep, k, gap, graph, true);
+        results = naiveGreedy_Reach(init, rep, k, graph, true);
     else if (algorithm == "greedy")
-        results = greedy_Reach(init, rep, k, gap, graph, true);
+        results = greedy_Reach(init, rep, k, graph, true);
     else if (algorithm == "naive-reach")
-        results = naiveGreedy_Reach(init, rep, k, gap, graph, false);
+        results = naiveGreedy_Reach(init, rep, k, graph, false);
     else if (algorithm == "reach")
-        results = greedy_Reach(init, rep, k, gap, graph, false);
+        results = greedy_Reach(init, rep, k, graph, false);
     else
     {
         cout << algorithm << "is not a valid algorithm" << endl;

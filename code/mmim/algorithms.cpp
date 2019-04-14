@@ -9,7 +9,7 @@ using std::endl;
 using std::vector;
 
 // Adds K random centers to the seeds
-vector<int> random(int init, int rep, int k, int gap, Graph &graph)
+vector<int> random(int init, int rep, int k, Graph &graph)
 {
     int numV = graph.n;
 
@@ -21,11 +21,13 @@ vector<int> random(int init, int rep, int k, int gap, Graph &graph)
 
     srand(static_cast<unsigned int>(time(NULL)));
 
+    //TODO Is this needed?
+    simRes result = simulation(seeds, rep, graph);
+
     int nextRand;
     for (int i = 2; i <= k; i++)
     {
         nextRand = (rand() % numV);
-        //nextRand = distr(generator);
         while (isSeed[nextRand])
         {
             nextRand++;
@@ -34,6 +36,8 @@ vector<int> random(int init, int rep, int k, int gap, Graph &graph)
         }
         seeds.push_back(nextRand);
         isSeed[nextRand] = true;
+        //TODO Is this needed?
+        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
@@ -41,7 +45,7 @@ vector<int> random(int init, int rep, int k, int gap, Graph &graph)
 }
 
 // Each round adds a seed: that is connected to the most number of nodes
-vector<int> max_deg(int init, int rep, int k, int gap, Graph &graph)
+vector<int> max_deg(int init, int rep, int k, Graph &graph)
 {
     int numV = graph.n;
 
@@ -75,7 +79,7 @@ vector<int> max_deg(int init, int rep, int k, int gap, Graph &graph)
 }
 
 // Each round adds a seed: that is connected to the most number of non-seed nodes
-vector<int> max_deg_adv(int init, int rep, int k, int gap, Graph &graph)
+vector<int> max_deg_adv(int init, int rep, int k, Graph &graph)
 {
     int numV = graph.n;
 
@@ -130,7 +134,7 @@ vector<int> max_deg_adv(int init, int rep, int k, int gap, Graph &graph)
 }
 
 // Each round adds a seed: that is connected to the most number of nodes
-vector<int> min_deg(int init, int rep, int k, int gap, Graph &graph)
+vector<int> min_deg(int init, int rep, int k, Graph &graph)
 {
     int numV = graph.n;
 
@@ -163,7 +167,7 @@ vector<int> min_deg(int init, int rep, int k, int gap, Graph &graph)
 }
 
 // Each round adds a seed: that is connected to the least number of seed nodes and then least number of non-seed nodes
-vector<int> min_deg_adv(int init, int rep, int k, int gap, Graph &graph)
+vector<int> min_deg_adv(int init, int rep, int k, Graph &graph)
 {
     int numV = graph.n;
 
@@ -219,7 +223,7 @@ vector<int> min_deg_adv(int init, int rep, int k, int gap, Graph &graph)
 // K-center: Minimize distance from seeds
 // Gonzalez Algorithm
 // Each round adds the furthest point to centers
-vector<int> k_gonz(int init, int rep, int k, int gap, Graph graph)
+vector<int> k_gonz(int init, int rep, int k, Graph graph)
 {
     int numV = graph.n;
 
@@ -228,6 +232,8 @@ vector<int> k_gonz(int init, int rep, int k, int gap, Graph graph)
 
     bool *isSeed = new bool[numV]{};
     isSeed[init] = true;
+    //TODO Is this needed?
+    simRes result = simulation(seeds, rep, graph);
 
     int *dist = new int[numV];
     int maxDist, furthest = 0;
@@ -250,6 +256,8 @@ vector<int> k_gonz(int init, int rep, int k, int gap, Graph graph)
 
         seeds.push_back(furthest);
         isSeed[furthest] = true;
+        //TODO Is this needed?
+        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;

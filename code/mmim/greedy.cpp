@@ -7,7 +7,7 @@ using std::endl;
 using std::vector;
 
 // Each rounds adds a seed: Min probable
-vector<int> myopic(int init, int rep, int k, int gap, Graph &graph)
+vector<int> myopic(int init, int rep, int k, Graph &graph)
 {
 
     vector<int> seeds;
@@ -25,12 +25,14 @@ vector<int> myopic(int init, int rep, int k, int gap, Graph &graph)
 }
 
 // Add k Min Probables
-vector<int> naiveMyopic(int init, int rep, int k, int gap, Graph &graph)
+vector<int> naiveMyopic(int init, int rep, int k, Graph &graph)
 {
     int numV = graph.n;
 
     vector<int> seeds;
     seeds.push_back(init);
+
+    simRes result = simulation(seeds, rep, graph);
 
     bool *isSeed = new bool[numV]{};
     isSeed[init] = true;
@@ -38,7 +40,7 @@ vector<int> naiveMyopic(int init, int rep, int k, int gap, Graph &graph)
     float minPr;
     for (int i = 2; i <= k; i++)
     {
-        minPr = rep;
+        minPr = rep + 1;
         for (int iter = 0; iter < numV; iter++)
             if (minPr > graph.prob[iter] && !isSeed[iter])
             {
@@ -47,6 +49,8 @@ vector<int> naiveMyopic(int init, int rep, int k, int gap, Graph &graph)
             }
         seeds.push_back(nextSeed);
         isSeed[nextSeed] = true;
+
+        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
@@ -55,7 +59,7 @@ vector<int> naiveMyopic(int init, int rep, int k, int gap, Graph &graph)
 
 // Each round adds a seed: That Increase the Min Probability the Most (true)
 // Each round adds a seed: That Increase the Average Probability the Most (false)
-vector<int> greedy_Reach(int init, int rep, int k, int gap, Graph &graph, bool obj)
+vector<int> greedy_Reach(int init, int rep, int k, Graph &graph, bool obj)
 {
 
     int numV = graph.n;
@@ -73,7 +77,7 @@ vector<int> greedy_Reach(int init, int rep, int k, int gap, Graph &graph, bool o
     for (int i = 2; i <= k; i++)
     {
         candidate = 0;
-        maxProb = 0;
+        maxProb = -1;
         for (int r = 0; r < numV; r++)
         {
             if (isSeed[r])
@@ -94,8 +98,7 @@ vector<int> greedy_Reach(int init, int rep, int k, int gap, Graph &graph, bool o
         seeds.push_back(candidate);
         isSeed[candidate] = true;
 
-        if (i % gap == 0)
-            result = simulation(seeds, rep, graph);
+        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
@@ -104,7 +107,7 @@ vector<int> greedy_Reach(int init, int rep, int k, int gap, Graph &graph, bool o
 
 // Adds k Seeds That Increase the Min Probability the Most (true)
 // Adds k Seeds That Increase the Average Probability the Most (false)
-vector<int> naiveGreedy_Reach(int init, int rep, int k, int gap, Graph &graph, bool obj)
+vector<int> naiveGreedy_Reach(int init, int rep, int k, Graph &graph, bool obj)
 {
     int numV = graph.n;
 
@@ -148,8 +151,7 @@ vector<int> naiveGreedy_Reach(int init, int rep, int k, int gap, Graph &graph, b
         seeds.push_back(candidate);
         isSeed[candidate] = true;
 
-        if (i % gap == 0)
-            result = simulation(seeds, rep, graph);
+        result = simulation(seeds, rep, graph);
     }
 
     delete[] isSeed;
