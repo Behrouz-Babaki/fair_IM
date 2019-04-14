@@ -21,3 +21,11 @@ tim/tim -dataset [DATASET DIR] -k [BUDGET] -model IC -epsilon 0.1 -outfile [OUTP
 fairgap
 -------
 mmim/build/mingap --graph-file [GRAPH FILE] --number-of-seeds [BUDGET] --solution-file [OUTPUT FILE] --algorithm [ALGORITHM]
+
+The ALGORITHM argument should be from the following list:
++ greedy
++ myopic
++ naive-myopic
++ random
++ Gonzalez
+ 
