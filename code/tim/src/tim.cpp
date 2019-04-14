@@ -3,12 +3,13 @@
 
 #define HEAD_INFO
 //#define HEAD_TRACE
+#include <fstream>
 #include "sfmt/SFMT.h"
 #include "head.h"
 #include "memoryusage.h"
 #include "graph.h"
 
-void run(TimGraph & m, string dataset, int k, double epsilon, string model ){
+void run(TimGraph & m, string dataset, int k, double epsilon, string model, string outfilename ){
     cout << "dataste:" << dataset << " k:" << k << " epsilon:"<< epsilon <<   " model:" << model << endl;
     m.k=k;
     if(model=="IC")
@@ -26,13 +27,26 @@ void run(TimGraph & m, string dataset, int k, double epsilon, string model ){
     for(auto item:m.seedSet)
         cout<< item << " ";
     cout<<endl;
+
+    if (!outfilename.empty())
+    {
+        ofstream outfile(outfilename);
+        if (!outfile.is_open())
+            cout << "error opening file " << outfilename << endl;
+        else
+        {
+            for (auto item : m.seedSet)
+                outfile << item << endl;
+            outfile.close();
+        }
+    }
     //cout<<"Estimated Influence: " << m.InfluenceHyperGraph() << endl;
     Counter::show();
 }
 void parseArg(int argn, char ** argv)
 {
     string dataset="";
-
+    string outfilename="";
     double epsilon=0;
     string model="";
     int k=0;
@@ -40,6 +54,7 @@ void parseArg(int argn, char ** argv)
     for(int i=0; i<argn; i++)
     {
         if(argv[i]==string("-dataset")) dataset=string(argv[i+1])+"/";
+        if(argv[i]==string("-outfile")) outfilename=string(argv[i+1]);
         if(argv[i]==string("-epsilon")) epsilon=atof(argv[i+1]);
         if(argv[i]==string("-k")) k=atoi(argv[i+1]);
         if(argv[i]==string("-model")) {
@@ -72,7 +87,7 @@ void parseArg(int argn, char ** argv)
         graph_file=dataset + "graph_lt.inf";
 
     TimGraph m(dataset, graph_file);
-    run(m, dataset, k ,  epsilon, model );
+    run(m, dataset, k ,  epsilon, model, outfilename);
 }
 
 
