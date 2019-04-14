@@ -1,0 +1,23 @@
+celfpp
+------
+celfpp/InfluenceModels -c [CONFIG FILE]
+
+
+simpath
+-------
+simpath/InfluenceModels -c [CONFIG FILE]
+
+
+imm
+----
+imm/imm_discrete -dataset [DATASET DIR] -k [BUDGET] -model IC -epsilon 0.1 -outfile [OUTPUT FILE]
+
+
+tim
+---
+tim/tim -dataset [DATASET DIR] -k [BUDGET] -model IC -epsilon 0.1 -outfile [OUTPUT FILE] 
+
+
+fairgap
+-------
+mmim/build/mingap --graph-file [GRAPH FILE] --number-of-seeds [BUDGET] --solution-file [OUTPUT FILE] --algorithm [ALGORITHM]

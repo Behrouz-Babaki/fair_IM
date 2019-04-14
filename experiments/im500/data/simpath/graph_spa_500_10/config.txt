@@ -1,0 +1,9 @@
+# config file
+phase : 10
+propModel : IC
+mcruns : 10000
+probGraphFile : graph.txt
+outdir : output
+celfPlus : 1
+budget : 25
+startIt : 2
