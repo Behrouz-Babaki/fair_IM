@@ -32,7 +32,7 @@ def valoracle_to_single(f, i):
     return f_single
 
 
-def run(graphidx, budget, attribute, outdir):
+def run(graph_filename, budget, attribute, output_filename):
     global g
     print('Budget: {}'.format(budget))
 
@@ -49,65 +49,12 @@ def run(graphidx, budget, attribute, outdir):
     #tune the stepsize/batch size/number of iterations for MD by editing algorithms.py
     solver = 'md'
 
-    #network -> attribute -> n_runs * n_values
-    gr_values = {}
-    #network -> attribute -> n_runs * n_values
-    group_size = {}
-    #algorithm -> network -> attribute -> n_runs * n_values
-    alg_values = {}
-
-    algorithms = ['Greedy', 'GR', 'MaxMin-Size']
-    for alg in algorithms:
-        alg_values[alg] = {}
-
-
-    # graphidx can be from zero to 10
-    graphname = 'spa_500_{}'.format(graphidx)
-    #graphnames = ['spa_500_{}'.format(graphidx) for graphidx in range(10)]
-    print('graph: %s'%graphname)
-
-    graph_filename = os.path.join(os.path.realpath(os.path.dirname(__file__)),
-                                  'networks/graph_{}.pickle'.format(graphname))
     g = pickle.load(open(graph_filename, 'rb'))
-
-    #remove nodes without demographic information
-    if 'spa' not in graphname:
-        to_remove = []
-        for v in g.nodes():
-            if 'race' not in g.node[v]:
-                to_remove.append(v)
-        g.remove_nodes_from(to_remove)
-
-    #propagation probability for the ICM
-    # p = 0.1
-    # for u,v in g.edges():
-    #     g[u][v]['p'] = p
-
     g = nx.convert_node_labels_to_integers(g, label_attribute='pid')
-
-    gr_values[graphname] = {}
-    group_size[graphname] = {}
-    for alg in algorithms:
-        alg_values[alg][graphname] = {}
 
     #assign a unique numeric value for nodes who left the attribute blank
     nvalues = len(np.unique([g.node[v][attribute] for v in g.nodes()]))
-    if 'spa' not in graphname:
-        for v in g.nodes():
-            if np.isnan(g.node[v][attribute]):
-                g.node[v][attribute] = nvalues
-    nvalues = len(np.unique([g.node[v][attribute] for v in g.nodes()]))
-    gr_values[graphname][attribute] = np.zeros(nvalues)
-    group_size[graphname][attribute] = np.zeros(nvalues)
-    for alg in algorithms:
-        alg_values[alg][graphname][attribute] = np.zeros(nvalues)
-
-
-    fair_vals_attr = 0
-    greedy_vals_attr = 0
-    pof = 0
-
-    include_total = False
+    group_size = np.zeros(nvalues)
 
     live_graphs = sample_live_icm(g, 1000)
 
@@ -137,7 +84,7 @@ def run(graphidx, budget, attribute, outdir):
     nodes_attr = {}
     for vidx, val in enumerate(values):
         nodes_attr[val] = [v for v in g.nodes() if g.node[v][attribute] == val]
-        group_size[graphname][attribute][vidx] = len(nodes_attr[val])
+        group_size[vidx] = len(nodes_attr[val])
 
     opt_succession = {}
     if succession:
@@ -149,15 +96,9 @@ def run(graphidx, budget, attribute, outdir):
             val_oracle = multi_to_set(valoracle_to_single(make_multilinear_objective_samples_group(live_graphs_h, group_indicator,  list(h.nodes()), list(h.nodes()), np.ones(len(h))), 0), len(h))
             S_succession, opt_succession[val] = greedy(list(h.nodes()), math.ceil(len(nodes_attr[val])/len(g) * budget), val_oracle)
 
-    if include_total:
-        group_indicator = np.zeros((len(g.nodes()), len(values)+1))
-        for val_idx, val in enumerate(values):
-            group_indicator[nodes_attr[val], val_idx] = 1
-        group_indicator[:, -1] = 1
-    else:
-        group_indicator = np.zeros((len(g.nodes()), len(values)))
-        for val_idx, val in enumerate(values):
-            group_indicator[nodes_attr[val], val_idx] = 1
+    group_indicator = np.zeros((len(g.nodes()), len(values)))
+    for val_idx, val in enumerate(values):
+        group_indicator[nodes_attr[val], val_idx] = 1
 
 
 
@@ -182,14 +123,9 @@ def run(graphidx, budget, attribute, outdir):
             S_attr[val], opt_attr[val] = greedy(list(range(len(g))), int(len(nodes_attr[val])/len(g) * budget), f_attr[val])
     if succession:
         opt_attr = opt_succession
-    all_opt = np.array([opt_attr[val] for val in values])
-    gr_values[graphname][attribute] = all_opt
-
 
     threshold = 5
     targets = [opt_attr[val] for val in values]
-    if include_total:
-        targets.append(1.025*obj)
     targets = np.array(targets)
 
     #run the constrained fair algorithm
@@ -203,49 +139,39 @@ def run(graphidx, budget, attribute, outdir):
     #run the minimax algorithm
     print('running the minimax algorithm')
     start = time.time()
-    grad_oracle_normalized = make_normalized(grad_oracle, group_size[graphname][attribute])
-    val_oracle_normalized = make_normalized(val_oracle, group_size[graphname][attribute])
+    grad_oracle_normalized = make_normalized(grad_oracle, group_size)
+    val_oracle_normalized = make_normalized(val_oracle, group_size)
     minmax_x = maxmin_algo(grad_oracle_normalized, val_oracle_normalized, threshold, budget, group_indicator, 20, 10, 0.05, solver)
     minmax_x = minmax_x.mean(axis=0)
     duration = time.time() - start
     print('finished running the minimax algorithm in %g seconds'%duration)
 
-
-
     xg = np.zeros(len(fair_x))
     xg[list(S)] = 1
-
-    greedy_vals = val_oracle(xg, 1000)
-    all_fair_vals = val_oracle(fair_x, 1000)
-    all_minmax_vals = val_oracle(minmax_x, 1000)
-    if include_total:
-        greedy_vals = greedy_vals[:-1]
-        all_fair_vals = all_fair_vals[:-1]
-    alg_values['Greedy'][graphname][attribute] = greedy_vals
-    alg_values['GR'][graphname][attribute] = all_fair_vals
-    alg_values['MaxMin-Size'][graphname][attribute] = all_minmax_vals
-    #        for val_idx, val in enumerate(values):
-    #            print(attribute, val, all_fair_vals[val_idx], greedy_vals[val_idx], opt_attr[val])
-
-    fair_violation = np.clip(all_opt - all_fair_vals, 0, np.inf)/all_opt
-    greedy_violation = np.clip(all_opt - greedy_vals, 0, np.inf)/all_opt
-    fair_vals_attr = fair_violation.sum()/len(values)
-    greedy_vals_attr = greedy_violation.sum()/len(values)
-
-    minmax_min = (all_minmax_vals/group_size[graphname][attribute]).min()
-    greedy_min = (greedy_vals/group_size[graphname][attribute]).min()
-
-    pof = greedy_vals.sum()/all_fair_vals.sum()
-    print('fair: {}, greedy: {}'.format(fair_violation.sum()/len(values),  greedy_violation.sum()/len(values)))
-    outfilename = os.path.join(outdir, 'results_{}.pickle'.format(graphname))
-    pickle.dump((alg_values, gr_values, group_size), open(outfilename, 'wb'))
+    
+    results = dict(greedy=xg, fair=fair_x, minmax=minmax_x)
+    pickle.dump(results, open(output_filename, 'wb'))
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('graph_id', type=int, choices=range(10))
-    parser.add_argument('outdir')
+    parser.add_argument('graph_filename')
+    parser.add_argument('output_filename')
     parser.add_argument('--attribute', default='gender',
                         choices=['region', 'ethnicity', 'age', 'gender', 'status'])
     parser.add_argument('--budget', type=int, default=15)
     args = parser.parse_args()
-    run(args.graph_id, args.budget, args.attribute, args.outdir)
+
+    if not os.path.isfile(args.graph_filename):
+        print('ERROR opening %s'%args.graph_filename)
+        exit(1)
+    
+    try:
+        f = open(args.output_filename, 'wb')
+        f.close()
+        os.remove(args.output_filename)
+    except:
+        print('ERROR writing to %s'%args.output_filename)
+        exit(1)
+
+    run(args.graph_filename, args.budget, args.attribute, args.output_filename)
