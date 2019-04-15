@@ -55,7 +55,7 @@ Graph::Graph(string filename)
     graph_file.close();
 }
 
-vector<double> simulate(const Graph &graph, const vector<int> &seeds, uint n_reps)
+vector<double> simulate(const Graph &graph, const vector<int> &seeds, int n_reps)
 {
     std::srand(std::time(nullptr));
     int n_nodes = graph.n_nodes;
