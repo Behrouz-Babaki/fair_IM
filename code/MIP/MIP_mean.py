@@ -77,20 +77,20 @@ def MIP_IM():
 
                 for sample_index, sample in enumerate(samples):
                     for i in range(len(main_graph.nodes())):
-                        neighbors = sample.in_edges(i) 
+                        neighbors = nx.ancestors(sample, i) 
                         e = len(neighbors)
                         ai = var_active_dict[(sample_index,i)]
                         si = var_seed_dict[i]
-                        if i in  var_mean_dict.keys():
-                            var_mean_dict[i]+= ai
-                        else:
-                            var_mean_dict[i]= ai
-                        neighbors_vars = []
+                        neighbors_active_vars = []
+                        neighbors_seed_vars = []
+                        neighbors_active_vars.append(((e+1), ai))
+                        neighbors_seed_vars.append(si)
                         for neighbor in neighbors:
-                            neighbors_vars.append(var_active_dict[(sample_index,neighbor[0])])
-                        expr = (e+1)*ai-si-quicksum(neighbors_vars)
-                        model.addConstr(expr, GRB.GREATER_EQUAL, 0)
-                        model.addConstr(expr, GRB.LESS_EQUAL, e)
+                            neighbors_active_vars.append(((e+1), var_active_dict[(sample_index,neighbor)]))
+                            neighbors_seed_vars.append(var_seed_dict[neighbor])
+                        seed_neighbors = quicksum(neighbors_seed_vars)
+                        model.addConstr(ai, GRB.LESS_EQUAL, seed_neighbors)
+                        model.addConstr(seed_neighbors, GRB.LESS_EQUAL, LinExpr(neighbors_active_vars))
 
                 mean_label_dict = {}
                 for label in label_dict.keys():

@@ -32,19 +32,6 @@ for j in range(m):
 # In[3]:
 
 
-labels = nx.get_node_attributes(main_graph, 'gender')
-label_dict = {}
-for i in range(len(main_graph.nodes())):
-    label = labels[i].encode('utf-8')
-    if label in label_dict.keys():
-        label_dict[label].append(i)
-    else:
-        label_dict[label] = [i]
-
-
-# In[4]:
-
-
 model = Model('IM')
 min_value = model.addVar(lb=0.0, ub=1.0, vtype=GRB.CONTINUOUS)
 
@@ -72,72 +59,46 @@ mvars.append(avars)
 mvars.append(svars)
 
 
-# In[5]:
+# In[4]:
 
 
 budget = 25
 model.addConstr(quicksum(svars), GRB.LESS_EQUAL, budget)
 
 
-# In[6]:
+# In[5]:
 
 
 obj_expr = quicksum(avars)
-model.setObjective(min_value, GRB.MAXIMIZE)
+model.setObjective(obj_expr, GRB.MAXIMIZE)
 
 
-# In[7]:
+# In[6]:
 
 
 for sample_index, sample in enumerate(samples):
     for i in range(len(main_graph.nodes())):
-        reachable = sample.in_edges(i)
-        #reachable = nx.descendants(sample, i)
-        e = len(reachable)
+        neighbors = nx.ancestors(sample, i) 
+        e = len(neighbors)
         ai = var_active_dict[(sample_index,i)]
         si = var_seed_dict[i]
         if i in  var_mean_dict.keys():
             var_mean_dict[i]+= ai
         else:
             var_mean_dict[i]= ai
-        child_active_vars = []
-        child_seed_vars = []
-        
-        
-        
-        for child in reachable:
-            child = child[0]
-            child_active_vars.append(var_active_dict[(sample_index,child)])
-            child_seed_vars.append(var_seed_dict[child])
-            model.addConstr(ai, GRB.GREATER_EQUAL, var_active_dict[(sample_index,child)])
-        #model.addConstr(ai * e  , GRB.GREATER_EQUAL, quicksum(child_seed_vars))    
-        #model.addConstr(ai  , GRB.LESS_EQUAL, quicksum(var_seed_dict))       
-            #model.addConstr(ai, GRB.GREATER_EQUAL, var_active_dict[(sample_index,neighbor[0])])
-        expr = (e+1)*ai-si-quicksum(child_active_vars)
-        model.addConstr(expr, GRB.GREATER_EQUAL, 0)
-        model.addConstr(expr, GRB.LESS_EQUAL, e)
-        
-        #model.addConstr(ai, GRB.LESS_EQUAL, si)
-        #model.addConstr(ai, GRB.LESS_EQUAL, 1)
-        #model.addConstr(ai, GRB.GREATER_EQUAL, 0)
-        #model.addConstr(ai, GRB.LESS_EQUAL, quicksum(neighbors_active_vars)+quicksum(neighbors_seed_vars))
-        
-        
-mean_label_dict = {}
-for label in label_dict.keys():
-    for node in label_dict[label]:
-        if label in mean_label_dict.keys():
-            mean_label_dict[label]+=var_mean_dict[node]
-        else:
-            mean_label_dict[label]=var_mean_dict[node]
-        
-        
-for label in label_dict.keys():
-    label_size = len(label_dict[label])
-    model.addConstr(mean_label_dict[label], GRB.GREATER_EQUAL, label_size *m* min_value)
+        neighbors_active_vars = []
+        neighbors_seed_vars = []
+        neighbors_active_vars.append(((e+1), ai))
+        neighbors_seed_vars.append(si)
+        for neighbor in neighbors:
+            neighbors_active_vars.append(((e+1), var_active_dict[(sample_index,neighbor)]))
+            neighbors_seed_vars.append(var_seed_dict[neighbor])
+        seed_neighbors = quicksum(neighbors_seed_vars)
+        model.addConstr(ai, GRB.LESS_EQUAL, seed_neighbors)
+        model.addConstr(seed_neighbors, GRB.LESS_EQUAL, LinExpr(neighbors_active_vars)) 
 
 
-# In[8]:
+# In[7]:
 
 
 try:
@@ -146,7 +107,7 @@ except e:
     print(e)
 
 
-# In[9]:
+# In[8]:
 
 
 for key,value in var_seed_dict.items():
@@ -154,28 +115,22 @@ for key,value in var_seed_dict.items():
         print(key)
 
 
-# In[10]:
+# In[9]:
 
 
 optimal = (model.Status == GRB.OPTIMAL)
 optimal
 
 
-# In[11]:
+# In[10]:
 
 
 objective = model.ObjVal
 objective
 
 
-# In[12]:
+# In[11]:
 
 
 objective/(500*m)
-
-
-# In[ ]:
-
-
-
 
