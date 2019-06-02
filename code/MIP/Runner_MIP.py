@@ -15,7 +15,7 @@ import argparse
 # In[ ]:
 
 
-def MIP_IM(m, input_graph, output_file):
+def MIP_IM(m, input_graph, output_file, log_file):
     budget = 25
     with open(input_graph, "rb") as f:
         main_graph = pickle.load(f)
@@ -32,6 +32,9 @@ def MIP_IM(m, input_graph, output_file):
 
 
         model = Model('influence_maximization_'+input_graph)
+        model.setParam('OutputFlag', 0)
+        model.setParam('TimeLimit', 1800)
+        
         mvars = []
         #active nodes
         avars = []
@@ -78,11 +81,25 @@ def MIP_IM(m, input_graph, output_file):
             model.optimize()
         except e:
             print(e)
+            
+        with open(log_file, "w") as of:  
+            runtime = model.Runtime
+            objective_value = model.ObjVal
+            status = model.Status
+            print('runtime\t%f'%(runtime), file = of)
+            print('objective_value\t%f'%(objective_value), file = of)
+            print('status\t%d'%(status), file = of)
+            print('sample_size\t%d'%(m), file = of)
+            print('input_graph\t%s'%(input_graph), file = of)
+            
+        
+        if (model.solCount>0):
+            with open(output_file, "w") as of:    
+                for key,value in var_seed_dict.items():
+                    if(value.x > 0):
+                        print(key, file = of)
 
-        with open(output_file, "w") as of:    
-            for key,value in var_seed_dict.items():
-                if(value.x > 0):
-                    print(key, file = of)
+        
 
 
 # In[ ]:
@@ -94,9 +111,10 @@ if __name__ == '__main__':
     parser.add_argument('sample_size', type=int)
     parser.add_argument('input_graph', type=str)
     parser.add_argument('output_file', type=str)
+    parser.add_argument('log_file', type=str)
     #input_graph = '../MIP/data/networks_prob/graph_spa_500_'+str(index)+'.pickle'
     #output_file  = '../../experiments/im500/results/mip/base%d/output_%d.txt'%(m,index)
     args = parser.parse_args()
 
-    MIP_IM(args.sample_size, args.input_graph, args.output_file )
+    MIP_IM(args.sample_size, args.input_graph, args.output_file, args.log_file)
 
