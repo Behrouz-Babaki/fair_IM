@@ -101,12 +101,12 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
         for label in label_dict.keys():
             for node in label_dict[label]:
                 if label in mean_label_dict.keys():
-                    mean_label_dict[label]+= var_mean_dict[node]
+                    mean_label_dict[label].append(var_mean_dict[node])
                 else:
-                    mean_label_dict[label]= var_mean_dict[node]
+                    mean_label_dict[label]= [var_mean_dict[node]]
             label_size = len(label_dict[label])
-            model.addConstr(quicksum(mean_label_dict[label]), GRB.GREATER_EQUAL, label_size *m* min_value)
-    
+            expr = quicksum(mean_label_dict[label])
+            model.addConstr(expr, GRB.GREATER_EQUAL, label_size *m* min_value)
 
 
         try:
