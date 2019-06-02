@@ -36,6 +36,7 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
         model.setParam('OutputFlag', 0)
         model.setParam('TimeLimit', 1800)
         
+        min_value = model.addVar(lb=0.0, ub=1.0, vtype=GRB.CONTINUOUS)
         
         mvars = []
         #active nodes
@@ -61,7 +62,8 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
         mvars.append(svars)
 
         obj_expr = quicksum(avars)
-        model.setObjective(obj_expr, GRB.MAXIMIZE)
+        
+        model.setObjective(min_value, GRB.MAXIMIZE)
         model.addConstr(quicksum(svars), GRB.LESS_EQUAL, budget)
 
         for sample_index, sample in enumerate(samples):
