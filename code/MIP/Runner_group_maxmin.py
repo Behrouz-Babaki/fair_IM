@@ -34,7 +34,7 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
 
         model = Model('group_maximin_'+input_graph)
         model.setParam('OutputFlag', 0)
-        model.setParam('TimeLimit', 1800)
+        model.setParam('TimeLimit', 3600)
         
         min_value = model.addVar(lb=0.0, ub=1.0, vtype=GRB.CONTINUOUS)
         
