@@ -30,13 +30,13 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file):
                 label_dict[label] = [i] 
         index = random.randint(0,100)
         opt_dict = stage_1_MIP(main_graph, label_dict, budget ,m, index)
-        stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, output_file, log_file)
+        stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, output_file, log_file, input_graph)
 
 
 # In[3]:
 
 
-def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, output_file, log_file):
+def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, output_file, log_file, input_graph):
     samples =  Mont_Carlo_Samplig(main_graph, m)
     model_name = 'DC_stage_2'+str(attribute)+'_'+str(index)
     model = Model(model_name)
@@ -121,7 +121,7 @@ def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, o
         print('input_graph\t%s'%(input_graph), file = of)
 
 
-# In[5]:
+# In[4]:
 
 
 if __name__ == '__main__':
