@@ -17,6 +17,7 @@ from MIP_DC import Mont_Carlo_Samplig, stage_1_MIP, induce_sub_graphs
 
 
 def MIP_IM(attribute, m, input_graph, output_file, log_file):
+    budget = 25
     with open(input_graph, "rb") as f:
         main_graph = pickle.load(f)
         labels = nx.get_node_attributes(main_graph, attribute)
