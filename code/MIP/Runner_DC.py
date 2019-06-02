@@ -95,7 +95,6 @@ def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, o
         expr = quicksum(label_vars)
         model.addConstr(expr, GRB.GREATER_EQUAL , opt_dict[label])    
     
-    
     try:
         model.optimize()
     except e:
