@@ -15,9 +15,9 @@ import argparse
 # In[ ]:
 
 
-def MIP_IM(index, m):
+def MIP_IM(m, input_graph, output_file):
     budget = 25
-    with open('../MIP/data/networks_prob/graph_spa_500_'+str(index)+'.pickle', "rb") as f:
+    with open(input_graph, "rb") as f:
         main_graph = pickle.load(f)
 
         samples = []
@@ -31,7 +31,7 @@ def MIP_IM(index, m):
             samples.append(G)
 
 
-        model = Model('influence_maximization_'+str(index))
+        model = Model('influence_maximization_'+input_graph)
         mvars = []
         #active nodes
         avars = []
@@ -79,7 +79,7 @@ def MIP_IM(index, m):
         except e:
             print(e)
 
-        with open('../../experiments/im500/results/mip/base%d/output_%d.txt'%(m,index), "w") as of:    
+        with open(output_file, "w") as of:    
             for key,value in var_seed_dict.items():
                 if(value.x > 0):
                     print(key, file = of)
@@ -91,9 +91,12 @@ def MIP_IM(index, m):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('index', type=int)
     parser.add_argument('sample_size', type=int)
+    parser.add_argument('input_graph', type=str)
+    parser.add_argument('output_file', type=str)
+    #input_graph = '../MIP/data/networks_prob/graph_spa_500_'+str(index)+'.pickle'
+    #output_file  = '../../experiments/im500/results/mip/base%d/output_%d.txt'%(m,index)
     args = parser.parse_args()
 
-    MIP_IM(arg.index, arg.m)
+    MIP_IM(args.sample_size, args.input_graph, args.output_file )
 
