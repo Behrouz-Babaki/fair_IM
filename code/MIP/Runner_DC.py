@@ -29,14 +29,14 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file):
             else:
                 label_dict[label] = [i] 
         index = random.randint(0,100)
-        opt_dict = stage_1_MIP(main_graph, label_dict, budget ,m, index )
+        opt_dict = stage_1_MIP(main_graph, label_dict, budget ,m, index)
         stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, output_file, log_file)
 
 
 # In[3]:
 
 
-def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index):
+def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index, output_file, log_file):
     samples =  Mont_Carlo_Samplig(main_graph, m)
     model_name = 'DC_stage_2'+str(attribute)+'_'+str(index)
     model = Model(model_name)
@@ -95,6 +95,13 @@ def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index):
         expr = quicksum(label_vars)
         model.addConstr(expr, GRB.GREATER_EQUAL , opt_dict[label])    
     
+    
+    try:
+        model.optimize()
+    except e:
+        print(e) 
+        
+        
     objective_value = -1
         
     if (model.solCount>0):
@@ -114,7 +121,7 @@ def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index):
         print('input_graph\t%s'%(input_graph), file = of)
 
 
-# In[4]:
+# In[5]:
 
 
 if __name__ == '__main__':
