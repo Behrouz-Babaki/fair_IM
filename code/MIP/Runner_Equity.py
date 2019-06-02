@@ -95,7 +95,7 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
         for label in label_dict.keys():
             seed_vars = []
             label_size = len(label_dict[label])
-            frac = float(label_size)/float(len(main_graph.nodes()))
+            frac = (label_size)/(len(main_graph.nodes()))
             for node in label_dict[label]:
                 seed_vars.append(var_seed_dict[node])
             label_budget = int(budget*frac)
