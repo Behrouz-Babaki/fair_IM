@@ -9,6 +9,7 @@ from gurobipy import Model, GRB, quicksum, LinExpr
 import networkx as nx
 import pickle
 import numpy, random
+import argparse
 
 
 # In[ ]:
@@ -78,7 +79,7 @@ def MIP_IM(index, m):
         except e:
             print(e)
 
-        with open('../Git/influence_maximization/experiments/im500/results/mip/base%d/output_%d.txt'%(m,index), "w") as of:    
+        with open('../../experiments/im500/results/mip/base%d/output_%d.txt'%(m,index), "w") as of:    
             for key,value in var_seed_dict.items():
                 if(value.x > 0):
                     print(key, file = of)
