@@ -98,7 +98,7 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
             frac = float(label_size)/float(len(main_graph.nodes()))
             for node in label_dict[label]:
                 seed_vars.append(var_seed_dict[node])
-            label_budget = budget*frac
+            label_budget = int(budget*frac)
             expr = quicksum(seed_vars)
             model.addConstr(expr, GRB.LESS_EQUAL, label_budget*(1+ epsilon))
             model.addConstr(expr, GRB.GREATER_EQUAL, label_budget*(1-epsilon))    
