@@ -45,3 +45,6 @@
 **/mmim/build
 
 experiments/images
+
+gurobi.log
+
