@@ -109,23 +109,23 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
         except e:
             print(e)
 
-
+        objective_value = -1
+        
+        if (model.solCount>0):
+            objective_value = model.ObjVal
+            with open(output_file, "w") as of:    
+                for key,value in var_seed_dict.items():
+                    if(value.x > 0):
+                        print(key, file = of)
+        
         with open(log_file, "w") as of:  
             runtime = model.Runtime
-            objective_value = model.ObjVal
             status = model.Status
             print('runtime\t%f'%(runtime), file = of)
             print('objective_value\t%f'%(objective_value), file = of)
             print('status\t%d'%(status), file = of)
             print('sample_size\t%d'%(m), file = of)
             print('input_graph\t%s'%(input_graph), file = of)
-            
-        
-        if (model.solCount>0):
-            with open(output_file, "w") as of:    
-                for key,value in var_seed_dict.items():
-                    if(value.x > 0):
-                        print(key, file = of)
 
 
 # In[3]:
