@@ -16,6 +16,9 @@ import numpy, random
 
 def OPT(model_name, main_graph, samples, budget ,m):
     model = Model(model_name)
+    model.setParam('OutputFlag', 0)
+    model.setParam('TimeLimit', 1800)
+    
     mvars = []
     #active nodes
     avars = []
@@ -92,6 +95,9 @@ def stage_2_MIP(main_graph, opt_dict, attribute, label_dict, budget ,m, index):
     samples =  Mont_Carlo_Samplig(main_graph, m)
     model_name = 'DC_stage_2'+str(attribute)+'_'+str(index)
     model = Model(model_name)
+    model.setParam('OutputFlag', 0)
+    model.setParam('TimeLimit', 1800)
+        
     mvars = []
     #active nodes
     avars = []
@@ -210,5 +216,5 @@ def MIP_IM():
 # In[8]:
 
 
-MIP_IM()
+#MIP_IM()
 
