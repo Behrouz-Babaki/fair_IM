@@ -63,6 +63,7 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
 
         obj_expr = quicksum(avars)
         model.setObjective(obj_expr, GRB.MAXIMIZE)
+        
         model.addConstr(quicksum(svars), GRB.LESS_EQUAL, budget)
 
         for sample_index, sample in enumerate(samples):
@@ -107,8 +108,8 @@ def MIP_IM(attribute, m, input_graph, output_file, log_file ):
                 label_budget = LinExpr(actives)
                 expr = quicksum(active_label_vars)
                 model.addConstr(buget_var, GRB.EQUAL, label_budget)
-                model.addConstr(expr, GRB.LESS_EQUAL, buget_var+ epsilon)
-                model.addConstr(expr, GRB.GREATER_EQUAL, buget_var-epsilon)   
+                model.addConstr(expr, GRB.LESS_EQUAL, buget_var*(1+ epsilon))
+                model.addConstr(expr, GRB.GREATER_EQUAL, buget_var*(1-epsilon)) 
 
 
         try:
