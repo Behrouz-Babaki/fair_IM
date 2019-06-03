@@ -121,6 +121,8 @@ def stage_2_MIP(main_graph, objective_val, budget ,m, index, output_file, log_fi
     avars = []
     #seed nodes
     svars = []
+    #distance
+    dvars = []
     var_seed_dict = {}
     var_active_dict = {}
 
