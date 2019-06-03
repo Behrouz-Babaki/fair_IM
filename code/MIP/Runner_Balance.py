@@ -101,14 +101,6 @@ def MIP_IM(m, input_graph, output_file, log_file):
     budget = 25
     with open(input_graph, "rb") as f:
         main_graph = pickle.load(f)
-        labels = nx.get_node_attributes(main_graph, attribute)
-        label_dict = {}
-        for i in range(len(main_graph.nodes())):
-            label = labels[i].encode('utf-8')
-            if label in label_dict.keys():
-                label_dict[label].append(i)
-            else:
-                label_dict[label] = [i] 
         index = random.randint(0,100)
         objective_val = stage_1_MIP(main_graph, label_dict, budget ,m, index)
         stage_2_MIP(main_graph, objective_val, label_dict, budget ,m, index, output_file, log_file, input_graph)
