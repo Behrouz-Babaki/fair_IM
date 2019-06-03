@@ -87,7 +87,7 @@ def Mont_Carlo_Samplig(main_graph, m):
 # In[4]:
 
 
-def stage_1_MIP(main_graph, label_dict, budget ,m, index):
+def stage_1_MIP(main_graph, budget ,m, index):
     model_name = 'Balance_stage_2_'+str(index)
     samples = Mont_Carlo_Samplig(main_graph, m)
     objective_val = OPT(model_name, main_graph, samples, budget ,m)
@@ -102,14 +102,14 @@ def MIP_IM(m, input_graph, output_file, log_file):
     with open(input_graph, "rb") as f:
         main_graph = pickle.load(f)
         index = random.randint(0,100)
-        objective_val = stage_1_MIP(main_graph, label_dict, budget ,m, index)
-        stage_2_MIP(main_graph, objective_val, label_dict, budget ,m, index, output_file, log_file, input_graph)
+        objective_val = stage_1_MIP(main_graph, budget ,m, index)
+        stage_2_MIP(main_graph, objective_val,  budget ,m, index, output_file, log_file, input_graph)
 
 
 # In[6]:
 
 
-def stage_2_MIP(main_graph, objective_val, label_dict, budget ,m, index, output_file, log_file, input_graph):
+def stage_2_MIP(main_graph, objective_val, budget ,m, index, output_file, log_file, input_graph):
     delta = 0.8
     samples =  Mont_Carlo_Samplig(main_graph, m)
     model_name = 'Balance_stage_2'+str(index)
