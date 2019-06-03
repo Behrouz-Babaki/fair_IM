@@ -211,12 +211,11 @@ def stage_2_MIP(main_graph, objective_val, label_dict, budget ,m, index, output_
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('attribute', type=str)
     parser.add_argument('sample_size', type=int)
     parser.add_argument('input_graph', type=str)
     parser.add_argument('output_file', type=str)
     parser.add_argument('log_file', type=str)
     args = parser.parse_args()
 
-    MIP_IM(args.attribute, args.sample_size, args.input_graph, args.output_file, args.log_file)
+    MIP_IM(args.sample_size, args.input_graph, args.output_file, args.log_file)
 
