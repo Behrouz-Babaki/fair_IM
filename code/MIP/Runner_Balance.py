@@ -97,7 +97,7 @@ def stage_1_MIP(main_graph, label_dict, budget ,m, index):
 # In[5]:
 
 
-def MIP_IM(attribute, m, input_graph, output_file, log_file):
+def MIP_IM(m, input_graph, output_file, log_file):
     budget = 25
     with open(input_graph, "rb") as f:
         main_graph = pickle.load(f)
