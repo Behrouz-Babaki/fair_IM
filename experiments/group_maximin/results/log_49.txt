@@ -1,0 +1,5 @@
+runtime	2222.618475
+objective_value	0.151736
+status	2
+sample_size	1000
+input_graph	../../code/MIP/data/networks_prob/graph_spa_500_12.pickle

@@ -16,7 +16,7 @@ job_str = '''#!/bin/bash
 #SBATCH --account=def-gendrea1
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --time=00:120:00
+#SBATCH --time=00:70:00
 #SBATCH --output=out/o{job_id}.out
 #SBATCH --error=out/o{job_id}.out
 #SBATCH --job-name=mip.{job_id}
@@ -40,7 +40,7 @@ source deactivate
 
 attribute_options = ['gender', 'age', 'ethnicity', 'region']
 graph_index_options = range(20)
-n_samples_options = [100]
+n_samples_options = [1000]
 
 
 # In[ ]:

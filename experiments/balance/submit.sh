@@ -1,0 +1,21 @@
+#!/bin/bash
+sbatch jobscripts/job1.sh
+sbatch jobscripts/job2.sh
+sbatch jobscripts/job3.sh
+sbatch jobscripts/job4.sh
+sbatch jobscripts/job5.sh
+sbatch jobscripts/job6.sh
+sbatch jobscripts/job7.sh
+sbatch jobscripts/job8.sh
+sbatch jobscripts/job9.sh
+sbatch jobscripts/job10.sh
+sbatch jobscripts/job11.sh
+sbatch jobscripts/job12.sh
+sbatch jobscripts/job13.sh
+sbatch jobscripts/job14.sh
+sbatch jobscripts/job15.sh
+sbatch jobscripts/job16.sh
+sbatch jobscripts/job17.sh
+sbatch jobscripts/job18.sh
+sbatch jobscripts/job19.sh
+sbatch jobscripts/job20.sh
