@@ -1,17 +1,24 @@
-from im import IMBaseModel
+from base import IMBaseModel
 from gurobipy import Model, GRB, quicksum, LinExpr
 import networkx as nx
 
 class EqualityModel(IMBaseModel):
     def __init__(self, attribute, graph, samples,
         budget, epsilon, name='im_equality'):
-        
-        IMBaseModel.__init__(self, graph, samples, budget, name)
+
         self.attribute = attribute
         self.epsilon = epsilon
-        self._add_equality_constraints()
+        
+        IMBaseModel.__init__(self, graph, samples, budget, name)
 
-    def _add_equality_constraints(self):
+    def _add_objective(self):
+        obj_expr = quicksum(self.avars)
+        self.model.setObjective(obj_expr, GRB.MAXIMIZE)
+
+    def _add_constraints(self):
+
+        self.model.addConstr(quicksum(self.svars), GRB.LESS_EQUAL, self.budget)
+        
         labels = nx.get_node_attributes(self.graph, self.attribute)
         label_dict = {}
         for i in range(len(self.graph.nodes())):

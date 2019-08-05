@@ -1,4 +1,4 @@
-from im import IMBaseModel
+from base import IMBaseModel
 from gurobipy import Model, GRB, quicksum, LinExpr
 import networkx as nx
 
@@ -6,14 +6,23 @@ class GroupMaximinModel(IMBaseModel):
     def __init__(self, attribute, graph, samples,
         budget, epsilon, name='im_equality'):
         
-        IMBaseModel.__init__(self, graph, samples, budget, name)
         self.attribute = attribute
-        self.epsilon = epsilon
-        self._add_group_maximin_constraints()
-
-    def _add_group_maximin_constraints(self):
-        labels = nx.get_node_attributes(self.graph, attribute)
+        self.epsilon = epsilon        
         
+        IMBaseModel.__init__(self, graph, samples, budget, name)
+
+    def _initialize(self):
+        IMBaseModel._initialize(self)
+        self.min_value = self.model.addVar(lb=0.0, ub=1.0, vtype=GRB.CONTINUOUS)
+
+    def _add_objective(self):
+        self.model.setObjective(self.min_value, GRB.MAXIMIZE)
+
+    def _add_constraints(self):
+        
+        self.model.addConstr(quicksum(self.svars), GRB.LESS_EQUAL, self.budget)
+
+        labels = nx.get_node_attributes(self.graph, self.attribute)
         label_dict = {}
         for i in range(len(self.graph.nodes())):
             label = labels[i].encode('utf-8')
@@ -40,7 +49,7 @@ class GroupMaximinModel(IMBaseModel):
                     mean_label_dict[label]= [var_mean_dict[node]]
             label_size = len(label_dict[label])
             expr = quicksum(mean_label_dict[label])
-            self.model.addConstr(expr, GRB.GREATER_EQUAL, label_size * len(self.samples) * min_value)
+            self.model.addConstr(expr, GRB.GREATER_EQUAL, label_size * len(self.samples) * self.min_value)
 
 if __name__ == '__main__':
 
@@ -61,6 +70,7 @@ if __name__ == '__main__':
     with open(args.sample_file, 'rb') as f:
         samples = pickle.load(f)
     
-    model = GroupMaximinModel(args.attribute, graph, samples, budget=25)
+    model = GroupMaximinModel(args.attribute, graph, samples, 
+        budget=25, epsilon=0.1)
     model.solve()
     model.save_results(args.log_file, args.output_file)

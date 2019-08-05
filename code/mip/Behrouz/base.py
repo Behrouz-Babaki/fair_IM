@@ -4,7 +4,7 @@ import networkx as nx
 class IMBaseModel(object):
 
     def __init__(self, graph, samples, 
-        budget, name='influence_maximization'):
+        budget, name):
 
         self.graph = graph
         self.samples = samples
@@ -20,10 +20,12 @@ class IMBaseModel(object):
         self.var_seed_dict = {}
         self.var_active_dict = {}
 
-        self._create_model()
+        self._initialize()
+        self._add_constraints()
+        self._add_objective()
 
 
-    def _create_model(self):        
+    def _initialize(self):        
 
         self.model = Model(self.name)
         self.model.setParam('OutputFlag', 0)
@@ -39,10 +41,6 @@ class IMBaseModel(object):
                 a = self.model.addVar(lb=0.0, ub=1.0, vtype=GRB.BINARY)
                 self.avars.append(a)
                 self.var_active_dict[(sample_index,j)] = a    
-
-        obj_expr = quicksum(self.avars)
-        self.model.setObjective(obj_expr, GRB.MAXIMIZE)
-        self.model.addConstr(quicksum(self.svars), GRB.LESS_EQUAL, self.budget)
 
         for sample_index, sample in enumerate(self.samples):
             for i in range(len(self.graph.nodes())):
@@ -60,6 +58,12 @@ class IMBaseModel(object):
                 seed_neighbors = quicksum(neighbors_seed_vars)
                 self.model.addConstr(ai, GRB.LESS_EQUAL, seed_neighbors)
                 self.model.addConstr(seed_neighbors, GRB.LESS_EQUAL, LinExpr(neighbors_active_vars))        
+    
+    def _add_objective(self):
+        pass
+
+    def _add_constraints(self):
+        pass
 
     def solve(self):
         try:
@@ -82,26 +86,3 @@ class IMBaseModel(object):
                 for key,value in self.var_seed_dict.items():
                     if(value.x > 0):
                         print(key, file = of)
-
-
-if __name__ == '__main__':
-
-    import pickle
-    import argparse
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('input_graph')
-    parser.add_argument('sample_file')
-    parser.add_argument('output_file')
-    parser.add_argument('log_file')
-    args = parser.parse_args()
-
-    with open(args.input_graph, 'rb') as f:
-        graph = pickle.load(f)
-
-    with open(args.sample_file, 'rb') as f:
-        samples = pickle.load(f)
-    
-    model = IMBaseModel(graph, samples, budget=25)
-    model.solve()
-    model.save_results(args.log_file, args.output_file)
