@@ -1,0 +1,5 @@
+runtime	0.315048
+objective_value	1554.000000
+status	2
+sample_size	20
+input_graph	../data/graphs/graph_14.pkl
