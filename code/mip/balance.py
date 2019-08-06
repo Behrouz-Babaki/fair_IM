@@ -5,7 +5,7 @@ from gurobipy import Model, GRB, quicksum, LinExpr
 
 class IndividualMaximinModel(IMBaseModel):
     def __init__(self, graph, samples,
-        budget, time_limit=1800, name='individual_maximin'):
+        budget, time_limit, name='individual_maximin'):
         
         self.budget = budget
         self.n = len(graph.nodes)
@@ -40,19 +40,21 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('input_graph')
-    parser.add_argument('sample_file')
-    parser.add_argument('output_file')
-    parser.add_argument('log_file')
+    parser.add_argument('--graph-file', required=True)
+    parser.add_argument('--sample_file', required=True)
+    parser.add_argument('--output_file', required=True)
+    parser.add_argument('--log_file', required=True)
+    parser.add_argument('--budget', type=int, default=25)
+    parser.add_argument('--time-limit', type=int, default=1800)
     args = parser.parse_args()
 
-    with open(args.input_graph, 'rb') as f:
+    with open(args.graph_file, 'rb') as f:
         graph = pickle.load(f)
 
     with open(args.sample_file, 'rb') as f:
         samples = pickle.load(f)
     
     model = IndividualMaximinModel(graph, samples, 
-        budget=25, time_limit=600)
+        args.budget, args.time_limit)
     model.solve()
     model.save_results(args.log_file, args.output_file)

@@ -5,14 +5,19 @@
 #SBATCH --time=11:59:00
 #SBATCH --output=outputs/o7.out
 #SBATCH --error=outputs/o7.out
-#SBATCH --job-name=mip.7
+#SBATCH --job-name=maximin.7
 
 module use /scinet/niagara/software/commercial/modules
 module load gurobi/8.1.1
 module load anaconda3/5.2.0
 source activate im-env
 
-../../code/mip/individual_maximin.py                 data/graphs/g.6.pkl                     data/samples/s1000/g.6.samples.pkl      results/g.6.out                         results/g.6.log
+../../code/mip/individual_maximin.py                                     \
+    --graph_file data/graphs/g.6.pkl                            \
+    --sample_file data/samples/s1000/g.6.samples.pkl   \
+    --output_file results/g.6.s.1000.out               \
+    --log_file results/g.6.s.1000.log                  \
+    --time_limit 39600
 
 source deactivate
 

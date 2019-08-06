@@ -13,18 +13,19 @@ job_str = '''#!/bin/bash
 #SBATCH --time=11:59:00
 #SBATCH --output=outputs/o{job_id}.out
 #SBATCH --error=outputs/o{job_id}.out
-#SBATCH --job-name=mip.{job_id}
+#SBATCH --job-name=maximin.{job_id}
 
 module use /scinet/niagara/software/commercial/modules
 module load gurobi/8.1.1
 module load anaconda3/5.2.0
 source activate im-env
 
-../../code/mip/individual_maximin.py             \
-    data/graphs/g.{graph_id}.pkl                 \
-    data/samples/s1000/g.{graph_id}.samples.pkl  \
-    results/g.{graph_id}.out                     \
-    results/g.{graph_id}.log
+../../code/mip/individual_maximin.py                                     \\
+    --graph_file data/graphs/g.{graph_id}.pkl                            \\
+    --sample_file data/samples/s{sample_size}/g.{graph_id}.samples.pkl   \\
+    --output_file results/g.{graph_id}.s.{sample_size}.out               \\
+    --log_file results/g.{graph_id}.s.{sample_size}.log                  \\
+    --time_limit 39600
 
 source deactivate
 '''
