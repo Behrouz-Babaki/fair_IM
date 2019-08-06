@@ -12,7 +12,7 @@ module load gurobi/8.1.1
 module load anaconda3/5.2.0
 source activate im-env
 
-../../code/mip/balance.py                   data/graphs/g.0.pkl                       data/samples/s100/g.0.pkl       results/g.0.s.100.out           results/g.0.s.100.log
+../../code/mip/balance.py                                      data/graphs/g.0.pkl                               data/samples/s100/g.0.samples.pkl       results/g.0.s.100.out                   results/g.0.s.100.log
 
 source deactivate
 

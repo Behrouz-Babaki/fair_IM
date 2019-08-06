@@ -20,10 +20,10 @@ module load gurobi/8.1.1
 module load anaconda3/5.2.0
 source activate im-env
 
-../../code/mip/balance.py               \
-    data/graphs/g.{graph_id}.pkl                   \
-    data/samples/s{sample_size}/g.{graph_id}.pkl   \
-    results/g.{graph_id}.s.{sample_size}.out       \
+../../code/mip/balance.py                                  \
+    data/graphs/g.{graph_id}.pkl                           \
+    data/samples/s{sample_size}/g.{graph_id}.samples.pkl   \
+    results/g.{graph_id}.s.{sample_size}.out               \
     results/g.{graph_id}.s.{sample_size}.log
 
 source deactivate

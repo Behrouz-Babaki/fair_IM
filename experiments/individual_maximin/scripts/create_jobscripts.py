@@ -20,27 +20,24 @@ module load gurobi/8.1.1
 module load anaconda3/5.2.0
 source activate im-env
 
-../../code/mip/individual_maximin.py               \
-    data/graphs/g.{graph_id}.pkl                   \
-    data/samples/s{sample_size}/g.{graph_id}.pkl   \
-    results/g.{graph_id}.s.{sample_size}.out       \
-    results/g.{graph_id}.s.{sample_size}.log
+../../code/mip/individual_maximin.py             \
+    data/graphs/g.{graph_id}.pkl                 \
+    data/samples/s1000/g.{graph_id}.samples.pkl  \
+    results/g.{graph_id}.out                     \
+    results/g.{graph_id}.log
 
 source deactivate
 '''
 
 mapping = dict()
 
-graph_ids = range(24)
-sample_sizes = (100, 1000)
-
 job_id = 0
-for sample_size, graph_id in product(sample_sizes, graph_ids):
+for graph_id in range(24):
     job_id += 1
     option = dict()
     option['graph_id'] = graph_id
     option['job_id'] = job_id
-    option['sample_size'] = sample_size
+    option['sample_size'] = 1000
     outstr = job_str.format(**option)
     mapping[job_id] = option
     with open('../jobscripts/job%d.sh'%job_id, 'w') as f:

@@ -12,7 +12,7 @@ module load gurobi/8.1.1
 module load anaconda3/5.2.0
 source activate im-env
 
-../../code/mip/individual_maximin.py                   data/graphs/g.9.pkl                       data/samples/s100/g.9.pkl       results/g.9.s.100.out           results/g.9.s.100.log
+../../code/mip/individual_maximin.py                 data/graphs/g.9.pkl                     data/samples/s1000/g.9.samples.pkl      results/g.9.out                         results/g.9.log
 
 source deactivate
 
