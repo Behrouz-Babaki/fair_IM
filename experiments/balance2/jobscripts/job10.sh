@@ -13,11 +13,11 @@ module load anaconda3/5.2.0
 source activate im-env
 
 ../../code/mip/balance.py                                                \
-    --graph_file data/graphs/g.9.pkl                            \
-    --sample_file data/samples/s100/g.9.samples.pkl   \
-    --output_file results/g.9.s.100.out               \
-    --log_file results/g.9.s.100.log                  \
-    --time_limit 39600
+    --graph-file data/graphs/g.9.pkl                            \
+    --sample-file data/samples/s100/g.9.samples.pkl   \
+    --output-file results/g.9.s.100.out               \
+    --log-file results/g.9.s.100.log                  \
+    --time-limit 39600
 
 source deactivate
 

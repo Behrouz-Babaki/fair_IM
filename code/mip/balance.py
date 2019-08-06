@@ -41,9 +41,9 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--graph-file', required=True)
-    parser.add_argument('--sample_file', required=True)
-    parser.add_argument('--output_file', required=True)
-    parser.add_argument('--log_file', required=True)
+    parser.add_argument('--sample-file', required=True)
+    parser.add_argument('--output-file', required=True)
+    parser.add_argument('--log-file', required=True)
     parser.add_argument('--budget', type=int, default=25)
     parser.add_argument('--time-limit', type=int, default=1800)
     args = parser.parse_args()

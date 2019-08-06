@@ -21,11 +21,11 @@ module load anaconda3/5.2.0
 source activate im-env
 
 ../../code/mip/balance.py                                                \\
-    --graph_file data/graphs/g.{graph_id}.pkl                            \\
-    --sample_file data/samples/s{sample_size}/g.{graph_id}.samples.pkl   \\
-    --output_file results/g.{graph_id}.s.{sample_size}.out               \\
-    --log_file results/g.{graph_id}.s.{sample_size}.log                  \\
-    --time_limit 39600
+    --graph-file data/graphs/g.{graph_id}.pkl                            \\
+    --sample-file data/samples/s{sample_size}/g.{graph_id}.samples.pkl   \\
+    --output-file results/g.{graph_id}.s.{sample_size}.out               \\
+    --log-file results/g.{graph_id}.s.{sample_size}.log                  \\
+    --time-limit 39600
 
 source deactivate
 '''
