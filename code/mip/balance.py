@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from base import IMBaseModel
 from gurobipy import Model, GRB, quicksum, LinExpr
 
